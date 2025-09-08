@@ -4,7 +4,7 @@ import parseROCrateDataJS, { RoCrateServiceDefinition } from "@/lib/roCrate";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
 import { Input } from "@/components/ui/input";
-import { Copy, Filter, Grid3x3, LayoutGrid, LayoutList, Search } from "lucide-react";
+import { Copy, Filter, LayoutGrid, LayoutList, Search } from "lucide-react";
 import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SelectIcon } from "@radix-ui/react-select";

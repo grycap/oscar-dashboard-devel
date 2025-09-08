@@ -14,7 +14,6 @@ import OscarColors from "@/styles";
 import { RefreshCcwIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { RoCrateServiceDefinition } from "@/lib/roCrate";
-import { set } from "zod";
 
 interface HubServiceConfPopoverProps {
     roCrateServiceDef: RoCrateServiceDefinition;
