@@ -14,27 +14,38 @@ import OscarColors from "@/styles";
 import { RefreshCcwIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { RoCrateServiceDefinition } from "@/lib/roCrate";
+import { set } from "zod";
 
 interface HubServiceConfPopoverProps {
     roCrateServiceDef: RoCrateServiceDefinition;
     service: Service;
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
+    isConfigPopoverOpen?: boolean;
+    setIsConfigPopoverOpen?: (open: boolean) => void;
 		className?: ButtonProps["className"];
 		variant?: ButtonProps["variant"];
 		title?: string;
 }
 
-function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, setIsOpen, className = "", variant = "default", title = "Deploy Service" }: HubServiceConfPopoverProps) {
+function HubServiceConfPopover({ roCrateServiceDef, service, isConfigPopoverOpen, setIsConfigPopoverOpen, className = "", variant = "default", title = "Deploy Service" }: HubServiceConfPopoverProps) {
   const {systemConfig } = useAuth();
   const { refreshServices } = useServicesContext();
-
+  const [isOpen, setIsOpen] = useState(false);
+  
   const oidcGroups = systemConfig?.config.oidc_groups ?? [];
 	const asyncService = roCrateServiceDef.type.toLowerCase() === "asynchronous";
 
   function nameService() {
     return `hub-${generateReadableName(6)}-${genRandomString(8).toLowerCase()}`;
   }
+
+  const isDialogOpen = isConfigPopoverOpen !== undefined ? isConfigPopoverOpen : isOpen;
+
+  const handleOpenChange = (openState: boolean) => {
+    if (isConfigPopoverOpen === undefined) {
+      setIsOpen(openState);
+    }
+    setIsConfigPopoverOpen?.(openState);
+  };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -62,7 +73,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
   }, [oidcGroups]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isDialogOpen) return;
 
     setFormData((prev) => ({
       ...prev, 
@@ -81,7 +92,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       vo: false,
       token: false,
     });
-  }, [isOpen]);
+  }, [isDialogOpen]);
 
   const handleDeploy = async () => {
     const newErrors = {
@@ -150,13 +161,12 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
   }, [oidcGroups.length]);  
 
 return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button 
 					className={className}
           variant={variant}
           tooltipLabel={title}
-          onClick={() => {setIsOpen(false)}}
         >
           Deploy
         </Button>

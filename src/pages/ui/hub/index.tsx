@@ -4,24 +4,51 @@ import parseROCrateDataJS, { RoCrateServiceDefinition } from "@/lib/roCrate";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
 import { Input } from "@/components/ui/input";
-import { Copy, Filter, Search } from "lucide-react";
+import { Copy, Filter, Grid3x3, LayoutGrid, LayoutList, Search } from "lucide-react";
 import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SelectIcon } from "@radix-ui/react-select";
+import GenericTable from "@/components/Table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Service } from "../services/models/service";
+import yamlToServices from "../services/components/FDL/utils/yamlToService";
+import HubServiceConfPopover from "./components/HubServiceConfPopover";
+import { Button } from "@/components/ui/button";
+
+export interface ServiceWithRoCrate extends RoCrateServiceDefinition {
+  dockerImage: string;
+  service: Service;
+}
 
 function HubView() {
-  const [roCrateServices, setServices] = useState<RoCrateServiceDefinition[]>([]);
-  const [filteredServices, setFilteredServices] = useState<RoCrateServiceDefinition[]>([]);
+  const [filteredServices, setFilteredServices] = useState<ServiceWithRoCrate[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const authContext = useAuth();
   const [filter, setFilter] = useState<{serviceType: string}>({serviceType: "" });
-
+  const [serviceList, setServiceList] = useState<ServiceWithRoCrate[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGridView, setIsGridView] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      setServiceList([]);
       const roCrateServices = await parseROCrateDataJS("grycap", "oscar-hub", "main");
-      setServices(roCrateServices);
-      setFilteredServices(roCrateServices);
+      const services: ServiceWithRoCrate[] = [];
+      
+      for (const roCrateServiceDef of roCrateServices) {
+        const response = await fetch(roCrateServiceDef.fdlUrl);
+        if (response.ok) {
+          const service = yamlToServices(await response.text(), "")![0];
+          services.push({ 
+            ...roCrateServiceDef, // Spread all properties from RoCrateServiceDefinition
+            dockerImage: service.image ? service.image : "", // Add dockerImage property
+            service
+          });
+        }
+      }
+      setServiceList(services);
+      setIsLoading(false);
     };
     fetchData();
   }, []);
@@ -29,9 +56,9 @@ function HubView() {
   // Filter services based on search query
   useEffect(() => {
     if (!searchQuery.trim() && !filter.serviceType) {
-      setFilteredServices(roCrateServices);
+      setFilteredServices(serviceList);
     } else {
-      const filtered = roCrateServices.filter((service) => {
+      const filtered = serviceList.filter(( service ) => {
         const query = searchQuery.toLowerCase();
         return (
           service.name.toLowerCase().includes(query) && 
@@ -40,7 +67,7 @@ function HubView() {
       });
       setFilteredServices(filtered);
     }
-  }, [searchQuery, roCrateServices, filter]);
+  }, [searchQuery, serviceList, filter]);
 
   return (
     <>
@@ -71,7 +98,23 @@ function HubView() {
           </p>
         </div>
 
-        <div className="grid grid-cols-[auto_1fr] w-full -mb-3 gap-2">
+        <div className="grid grid-cols-[auto_auto_1fr] w-full -mb-3 gap-2">
+          <div className="flex items-center gap-1">
+            <Button
+              variant={isGridView ? "mainGreen" : "outline"}
+              size="sm"
+              onClick={() => setIsGridView(true)}
+            >
+              <LayoutGrid size={16} />
+            </Button>
+            <Button
+              variant={!isGridView ? "mainGreen" : "outline"}
+              size="sm"
+              onClick={() => setIsGridView(false)}
+            >
+              <LayoutList size={16} />
+            </Button>
+          </div>
           <Select
           >
             <SelectTrigger className="w-max">
@@ -126,29 +169,84 @@ function HubView() {
           />
         </div>
         
-        <div className="flex flex-wrap gap-1 justify-center sm:justify-start gap-6">
-          {filteredServices.length > 0 ? (
-            filteredServices.map((service, index) => (
-              <HubCard key={index} roCrateServiceDef={service} />
-            ))
-          ) : (
-            <div className="w-full text-center py-8">
-              <p className="text-gray-500 text-lg">
-                {searchQuery.trim() 
-                  ? `No services found matching "${searchQuery}"`
-                  : "No services available"
-                }
-              </p>
-              {searchQuery.trim() && (
-                <p className="text-gray-400 text-sm mt-2">
-                  Try searching with different keywords or clear the search to see all services.
-                </p>
-              )}
-            </div>
-          )}
+        {isLoading ? 
+        (<div className="w-full text-center py-8">
+          <p className="text-gray-500 text-lg">
+            Loading services...
+          </p>
         </div>
-      </div>
-    </>
+        ) :
+        (
+        <>
+          {isGridView ?
+          <div className="flex flex-wrap gap-1 justify-center sm:justify-start gap-6">
+            {filteredServices.length > 0 ? (
+              filteredServices.map((service, index) => (
+                <HubCard key={index} { ...service } />
+              ))
+            ) : (
+              <div className="w-full text-center py-8">
+                <p className="text-gray-500 text-lg">
+                  {searchQuery.trim() 
+                    ? `No services found matching "${searchQuery}"`
+                    : "No services available"
+                  }
+                </p>
+                {searchQuery.trim() && (
+                  <p className="text-gray-400 text-sm mt-2">
+                    Try searching with different keywords or clear the search to see all services.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          :
+          <div>
+          <Card>
+            <CardContent className="pt-2 flex flex-col max-h-[65vh]">
+              <GenericTable<ServiceWithRoCrate>
+                data={filteredServices}
+                idKey="name"
+                columns={[
+                { 
+                  header: "Name", 
+                  accessor: "name",
+                  sortBy: "name"
+                },
+                {
+                  header: "Type",
+                  accessor: "type",
+                  sortBy: "type"
+                },
+                { 
+                  header: "Docker Image",
+                  accessor: "dockerImage",
+                  sortBy: "dockerImage"
+                }
+                ]}
+                actions={[
+                  {
+                    button: (item) => {
+                      return (
+                      <HubServiceConfPopover
+                          className=""
+                          area-hidden={false}
+                          variant={"mainGreen"}
+                          roCrateServiceDef={item} service={item.service!}
+                        />
+                      )
+                    },
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
+          </div>
+          }
+        </>
+        )}
+    </div>
+  </>
   );
 }
 

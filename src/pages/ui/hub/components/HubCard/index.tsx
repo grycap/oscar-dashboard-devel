@@ -3,48 +3,21 @@ import { Service } from "../../../services/models/service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Info } from "lucide-react";
-import { useEffect, useState } from "react";
-import { RoCrateServiceDefinition } from "@/lib/roCrate";
-import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
+import { useState } from "react";
 import HubServiceConfPopover from "../HubServiceConfPopover";
+import { ServiceWithRoCrate } from "../..";
 
 
-interface HubCardProps {
-	roCrateServiceDef: RoCrateServiceDefinition;
-}
-
-function HubCard( { roCrateServiceDef }: HubCardProps ) {
+function HubCard( serviceWithRoCrate : ServiceWithRoCrate ) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isInfoOpen, setIsInfoOpen] = useState(false);
-	const [service, setService] = useState<Service>();
-	const [error, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-		try {
-			const response = await fetch(roCrateServiceDef.fdlUrl);
-			if (response.ok) {
-				const service = yamlToServices(await response.text(), "")![0];
-				setService(service);
-			} else {
-				setError(true);
-			}
-		} catch (error) {
-			setError(true);
-		}
-    };
-    fetchData();
-  }, []);
-
 
 	return (
-		<>
-		{!error && (
 		<Card className="w-60 h-70 flex flex-col hover:shadow-lg transition-shadow duration-300 bg-white border border-gray-200">
 			<CardHeader className="pl-4 pr-1 pb-1 pt-2 border-b border-gray-200">
 				<CardTitle className="text-md text-left text-gray-800">
 					<div className="flex flex-row items-center justify-between ">
-						{roCrateServiceDef.name}
+						{serviceWithRoCrate.name}
 						<Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
 							<DialogTrigger asChild className="self-start">
 								<Button
@@ -60,7 +33,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 								<DialogHeader>
 									<DialogTitle className="flex items-center gap-2">
 										<Info size={20} />
-										{roCrateServiceDef.name}
+										{serviceWithRoCrate.name}
 									</DialogTitle>
 								</DialogHeader>
 								<div className="mt-2">
@@ -74,7 +47,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 											</h4>
 											<div>
 												<span className="text-sm text-gray-700  py-1">
-													{roCrateServiceDef.author || 'Unknown'}
+													{serviceWithRoCrate.author || 'Unknown'}
 												</span>
 											</div>
 										</div>
@@ -83,8 +56,8 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 												Type
 											</h4>
 											<div>
-												<span className={`text-sm ${roCrateServiceDef.type === "asynchronous" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"} rounded-xl py-1 px-2`}>
-													{roCrateServiceDef.type}
+												<span className={`text-sm ${serviceWithRoCrate.type === "asynchronous" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"} rounded-xl py-1 px-2`}>
+													{serviceWithRoCrate.type}
 												</span>
 											</div>
 										</div>
@@ -94,7 +67,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 												</h4>
 											<div>
 												<code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
-													{service?.image}
+													{serviceWithRoCrate.service?.image}
 												</code>
 											</div>
 										</div>
@@ -113,7 +86,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 													<span className="text-xs text-gray-400">⚡</span>
 												</div>
 												<div className="text-sm text-gray-700 font-medium">
-													{roCrateServiceDef.cpuRequirements || 'Not specified'}
+													{serviceWithRoCrate.cpuRequirements || 'Not specified'}
 												</div>
 											</div>
 											
@@ -125,7 +98,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 													<span className="text-xs text-gray-400">🖥️</span>
 												</div>
 												<div className="text-sm text-gray-700 font-medium">
-													{(Number(roCrateServiceDef.gpuRequirements) > 0 ? roCrateServiceDef.gpuRequirements : 'Not required')}
+													{(Number(serviceWithRoCrate.gpuRequirements) > 0 ? serviceWithRoCrate.gpuRequirements : 'Not required')}
 												</div>
 											</div>
 											
@@ -137,8 +110,8 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 													<span className="text-xs text-gray-400">💾</span>
 												</div>
 												<div className="text-sm text-gray-700 font-medium mb-2">
-													{roCrateServiceDef.memoryRequirements && roCrateServiceDef.memoryUnits 
-														? `${roCrateServiceDef.memoryRequirements} ${roCrateServiceDef.memoryUnits}`
+													{serviceWithRoCrate.memoryRequirements && serviceWithRoCrate.memoryUnits 
+														? `${serviceWithRoCrate.memoryRequirements} ${serviceWithRoCrate.memoryUnits}`
 														: 'Not specified'
 													}
 												</div>
@@ -151,7 +124,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 											Description
 										</h4>
 										<p className="text-gray-600">
-											{roCrateServiceDef.description || 'Not specified'}
+											{serviceWithRoCrate.description || 'Not specified'}
 										</p>
 									</div>
 
@@ -187,7 +160,7 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 				<div className="w-32 h-32 mb-4 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden group-hover:opacity-30 transition-opacity duration-300"
 				>
 					<img
-						src={roCrateServiceDef.iconUrl}
+						src={serviceWithRoCrate.iconUrl}
 						className="max-w-full max-h-full object-contain"
 						onError={(e) => {
 							const target = e.target as HTMLImageElement;
@@ -203,13 +176,11 @@ function HubCard( { roCrateServiceDef }: HubCardProps ) {
 					<HubServiceConfPopover 
 						className="hover:opacity-90 text-white rounded-sm w-full h-8"
 						variant={"mainGreen"}
-						roCrateServiceDef={roCrateServiceDef} service={service!} isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}
+						roCrateServiceDef={serviceWithRoCrate} service={serviceWithRoCrate.service!} isConfigPopoverOpen={isDialogOpen} setIsConfigPopoverOpen={setIsDialogOpen}
 					/>
 				</div>
 			</CardContent>
 		</Card>
-		)}
-		</>
 	);
 }
 
