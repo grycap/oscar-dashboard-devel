@@ -1,5 +1,6 @@
 const env = {
     "EGI_ISSUER": "$EGI_CHECKIN_ISSUER",
+    "EGI_client_id": "$EGI_CHECKIN_CLIENT_ID",
     "AI4EOSC_ISSUER":"$AI4EOSC_KEYCLOAK_ISSUER",
     "AI4EOSC_client_id":"$AI4EOSC_KEYCLOAK_CLIENT_ID",
     "AI4EOSC_client_secret":"$AI4EOSC_KEYCLOAK_CLIENT_SECRET",
@@ -8,6 +9,7 @@ const env = {
     "provider_url": "/protocol/", 
     "client_id": "$EGI_CHECKIN_CLIENT_ID",
     "redirect_uri" : `${location.origin}/callback.html`,
+    "url_logout":"/protocol/openid-connect/logout",
     "url_authorize": "/protocol/openid-connect/auth",
     "url_user_info": "/protocol/openid-connect/userinfo",
     "token_endpoint": "/protocol/openid-connect/token",
