@@ -1,5 +1,5 @@
 import OscarLogo from "@/assets/oscar-big.png";
-import { Boxes, Codesandbox, Database, Info, LogOut, Notebook, Route, BarChart2 } from "lucide-react";
+import { Boxes, Codesandbox, Database, Info, LogOut, Notebook, Route, BarChart2, ChartPie } from "lucide-react";
 import OscarColors from "@/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -18,13 +18,14 @@ import {
 } from "@/components/ui/sidebar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
+import { addItemToPosition } from "@/lib/utils";
 
 function AppSidebar() {
   const authContext = useAuth();
   const { open } = useSidebar();
   const location = useLocation();
 
-  const items = [
+  var items = [
     {
       title: "Services",
       icon: <Codesandbox size={20} />,
@@ -61,6 +62,16 @@ function AppSidebar() {
       path: "/info",
     },
   ];
+
+  // Only show quotas if the user is oscar
+  if (authContext.authData.user === "oscar") {
+    items = addItemToPosition(items, 
+      {
+        title: "Quotas",
+        icon: <ChartPie size={20} />,
+        path: "/quotas",
+      }, 6);
+  }
 
   function handleLogout() {
     localStorage.removeItem("authData");
