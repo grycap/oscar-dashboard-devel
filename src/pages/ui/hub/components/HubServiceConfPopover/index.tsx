@@ -35,7 +35,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
   const {systemConfig, authData } = useAuth();
   const { refreshServices } = useServicesContext();
   const [newBucket, setNewBucket] = useState(false);
-  const buckets = useGetPrivateBuckets();
+  const buckets = useGetPrivateBuckets(isOpen);
 
   const oidcGroups = getAllowedVOs(systemConfig, authData);
 	const asyncService = roCrateServiceDef.type.some(t => t.toLowerCase() === "asynchronous");
