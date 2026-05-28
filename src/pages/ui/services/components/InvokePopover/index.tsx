@@ -20,6 +20,7 @@ import {
   ArrowRight,
   Terminal,
   Download,
+  FileWarningIcon,
 } from "lucide-react";
 import {
   Select,
@@ -43,6 +44,7 @@ import {
 import { getMimeTypeFromPath } from "@/lib/mimeType";
 import { errorMessage } from "@/lib/error";
 import { getEditableLanguage } from "@/lib/mimeType";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type View = "upload" | "editor" | "response";
 type RequestFileType = "text" | "image" | "binary";
@@ -106,6 +108,21 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
     }
     return "other";
   };
+
+  function fileFormatWarrgingView() {
+    return (
+      <div className="flex items-center justify-center h-full w-full">
+        <Alert variant="destructive" className="max-w-md bg-orange-50 text-orange-400">
+          <div className="flex flex-col items-center text-center">
+          <FileWarningIcon className="h-6 w-6 mb-2" />
+          <AlertDescription className="mt-1 text-sm">
+            This file will be sent as-is. Preview and editing are not available for this file type.
+          </AlertDescription>
+          </div>
+        </Alert>
+      </div>
+    );
+  }
 
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile);
@@ -316,12 +333,7 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
               />
             </div>
           )}
-          {fileType === "binary" && (
-            <div className="mt-4 text-sm text-muted-foreground">
-              This file will be sent as-is. Preview and editing are not available
-              for this file type.
-            </div>
-          )}
+          {fileType === "binary" && fileFormatWarrgingView()}
         </div>
       )}
     </div>
