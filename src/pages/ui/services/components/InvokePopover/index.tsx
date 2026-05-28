@@ -42,7 +42,7 @@ import {
 } from "@/lib/utils";
 import { getMimeTypeFromPath } from "@/lib/mimeType";
 import { errorMessage } from "@/lib/error";
-import { getEditableLanguage } from "@/lib/editableFileTypes";
+import { getEditableLanguage } from "@/lib/mimeType";
 
 type View = "upload" | "editor" | "response";
 type RequestFileType = "text" | "image" | "binary";
