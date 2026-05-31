@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useServicesContext from "../../context/ServicesContext";
-import getServicesApi from "@/api/services/getServicesApi";
 import deleteServiceApi from "@/api/services/deleteServiceApi";
 import { alert } from "@/lib/alert";
 import DeleteDialog from "@/components/DeleteDialog";
@@ -94,22 +93,12 @@ function DeploymentStatusCell({ initialDeployment, serviceName, onNavigate, eage
 }
 
 function ServicesList() {
-  const { services, servicesAreLoading, setServices, setFormService, filter, eagerLoadDeployment } =
+  const { services, servicesAreLoading, refreshServices, setFormService, filter, eagerLoadDeployment } =
     useServicesContext();
   const { authData, clusterInfo } = useAuth();
   const [servicesToDelete, setServicesToDelete] = useState<Service[]>([]);
   const navigate = useNavigate();
   const buttonRef = useRef<Map<string, HTMLButtonElement>>(new Map())
-
-  async function handleGetServices() {
-    try {
-      const response = await getServicesApi();
-      setServices(response);
-    } catch (error) {
-      alert.error(`Error getting services: ${errorMessage(error)}`);
-      console.error(error);
-    }
-  }
 
   async function handleDeleteService() {
     if (servicesToDelete.length > 0) {
@@ -141,7 +130,7 @@ function ServicesList() {
           };
         });
       
-      await handleGetServices();
+      refreshServices();
 
       if (succeededServices.length > 0) {
         alert.success("Services deleted successfully");
@@ -176,7 +165,7 @@ function ServicesList() {
 
   useEffect(() => {
     if (services.length === 0 || services.some((service) => !service.deployment)) {
-      handleGetServices();
+      refreshServices();
     }
   }, []);
 

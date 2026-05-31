@@ -7,7 +7,6 @@ import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
-import getServicesApi from "@/api/services/getServicesApi";
 import deleteServiceApi from "@/api/services/deleteServiceApi";
 import { alert } from "@/lib/alert";
 import updateServiceApi from "@/api/services/updateServiceApi";
@@ -38,9 +37,8 @@ function IntegratedApp({
   healthcheckPath,
   DeployInstancePopover,
 }: IntegratedAppProps) {
-  const { setFormService } = useServicesContext();
+  const { refreshServices, setFormService } = useServicesContext();
   const [servicesToDelete, setServicesToDelete] = useState<Service[]>([]);
-  const { setServices } = useServicesContext();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   
@@ -59,8 +57,7 @@ function IntegratedApp({
   async function handleGetServices() {
     try {
       setIsLoading(true);
-      const response = await getServicesApi();
-      setServices(response);
+      refreshServices();
     } catch (error) {
       alert.error(`Error getting services: ${errorMessage(error)}`);
       console.error(error);
