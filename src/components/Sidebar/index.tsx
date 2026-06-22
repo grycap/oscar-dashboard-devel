@@ -2,6 +2,7 @@ import OscarLogo from "@/assets/oscar-big.png";
 import {
   Activity,
   BarChart2,
+  Bot,
   BookOpen,
   Boxes,
   ChartPie,
@@ -73,6 +74,11 @@ function AppSidebar() {
       title: "Notebooks",
       icon: <Notebook size={20} />,
       path: "/notebooks",
+    },
+    {
+      title: "Agents",
+      icon: <Bot size={20} />,
+      path: "/agents",
     },
     {
       title: "Flows",

@@ -12,6 +12,7 @@ import VolumesRouter from "@/pages/ui/volumes/router";
 import InfoView from "@/pages/ui/info";
 import { ServicesProvider } from "@/pages/ui/services/context/ServicesContext";
 import JunoView from "@/pages/ui/juno";
+import AgentsView from "@/pages/ui/agents";
 import FlowsView from "@/pages/ui/flows";
 import TerminalView from "@/pages/ui/terminals";
 import FileBrowsersView from "@/pages/ui/filebrowsers";
@@ -45,6 +46,7 @@ function AppRouter() {
           <Route path="volumes/*" element={<VolumesRouter />} />
           <Route path="info" element={<InfoView />} />
           <Route path="notebooks" element={<JunoView />} />
+          <Route path="agents" element={<AgentsView />} />
           <Route path="flows" element={<FlowsView />} />
           <Route path="terminals" element={<TerminalView />} />
           <Route path="filebrowsers" element={<FileBrowsersView />} />
