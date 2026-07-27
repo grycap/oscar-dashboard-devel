@@ -3,6 +3,7 @@ import {
   Activity,
   BarChart2,
   BookOpen,
+  Bot,
   Boxes,
   ChartPie,
   Codesandbox,
@@ -94,11 +95,11 @@ function AppSidebar() {
       icon: <Boxes size={20} />,
       path: "/hub",
     },
-    /*{
+    {
       title: "Agents",
       icon: <Bot size={20} />,
       path: "/agents",
-    },*/
+    },
     {
       title: "Quotas",
       icon: <ChartPie size={20} />,
