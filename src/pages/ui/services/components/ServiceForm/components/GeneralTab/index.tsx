@@ -36,7 +36,7 @@ function ServiceGeneralTab() {
     useServicesContext();
 
   const { handleChange, onBlur, errors } = formFunctions;
-  const { systemConfig, authData } = useAuth();
+  const { systemConfig, authData, clusterInfo } = useAuth();
   const voGroups = getAllowedVOs(systemConfig, authData);
   function voGroupsIsEmpthy(){
     if( voGroups === undefined){ return true}
@@ -244,7 +244,7 @@ const serviceToDownload = getFDLAndScriptText(formService)
                 <strong>Exposed:</strong>
                 {formService.expose?.api_port ? (
                   <Link
-                    to={getExposedServiceUrl(authData.endpoint, formService.name)}
+                    to={getExposedServiceUrl(authData.endpoint, formService.name, "", clusterInfo?.version)}
                     target="_blank"
                   >
                     <ExternalLink size={18} />

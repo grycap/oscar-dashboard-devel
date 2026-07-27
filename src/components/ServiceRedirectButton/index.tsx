@@ -30,8 +30,8 @@ function ServiceRedirectButton({
   const { clusterInfo } = useAuth();
 
   const safeHealthcheckPath = healthcheckPath.startsWith("/") ? healthcheckPath.slice(1).trim() : healthcheckPath
-  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath);
-  const exposedBaseLink = getExposedServiceUrl(endpoint, service.name);
+  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath, clusterInfo?.version);
+  const exposedBaseLink = getExposedServiceUrl(endpoint, service.name, "", clusterInfo?.version);
   const serviceIsStopped = service.deployment?.state === "stopped";
       
   /**

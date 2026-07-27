@@ -24,11 +24,11 @@ function SimpleServiceRedirectButton({
 }) {
   const [isAlive, setIsAlive] = useState<boolean | null>(null);
   const { clusterInfo } = useAuth();
-  const redirectLink = getExposedServiceUrl(endpoint, service.name, interpolateVariables(service, additionalExposedPathArgs));
+  const redirectLink = getExposedServiceUrl(endpoint, service.name, interpolateVariables(service, additionalExposedPathArgs), clusterInfo?.version);
   const serviceIsStopped = service.deployment?.state === "stopped";
 
   const safeHealthcheckPath = healthcheckPath.startsWith("/") ? healthcheckPath.slice(1).trim() : healthcheckPath
-  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath);
+  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath, clusterInfo?.version);
       
   /**
    * Interpolate variables in the additionalExposedPathArgs string.

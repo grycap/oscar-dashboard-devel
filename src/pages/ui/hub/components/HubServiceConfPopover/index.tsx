@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
-import { generateReadableName, genRandomString, getAllowedVOs } from "@/lib/utils";
+import { generateReadableName, genRandomString, getAllowedVOs, usesDNSRoutes } from "@/lib/utils";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import {
   ManagedVolume,
@@ -32,7 +32,7 @@ interface HubServiceConfPopoverProps {
 }
 
 function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, setIsOpen, className = "", variant = "default", title = "Deploy Service" }: HubServiceConfPopoverProps) {
-  const {systemConfig, authData } = useAuth();
+  const {systemConfig, authData, clusterInfo } = useAuth();
   const { refreshServices } = useServicesContext();
   const [newBucket, setNewBucket] = useState(false);
   const buckets = useGetPrivateBuckets(isOpen);
@@ -109,10 +109,18 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       `/services/${serviceName}/exposed`
     );
     if (newValue.includes(`/services/${serviceName}/exposed`)) {
-      formData.enviromentVars = {
-        ...formData.enviromentVars,
-        [key]: newValue,
-      };
+      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
+      if (dnsRoutesEnabled) {
+        formData.enviromentVars = {
+          ...formData.enviromentVars,
+          [key]: "/",
+        };
+      } else {
+        formData.enviromentVars = {
+          ...formData.enviromentVars,
+          [key]: newValue,
+        };
+      }
     }
     return newValue;
   }

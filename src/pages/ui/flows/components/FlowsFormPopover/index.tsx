@@ -13,7 +13,7 @@ import createServiceApi from "@/api/services/createServiceApi";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import RequestButton from "@/components/RequestButton";
-import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, isVersionLower } from "@/lib/utils";
+import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import { errorMessage } from "@/lib/error";
 import StorageSelectForm, { StorageSelectFormRef } from "@/components/StorageSelectForm";
 
@@ -102,9 +102,8 @@ function FlowsFormPopover() {
       const scriptResponse = await fetch(scriptUrl, fetchFromGitHubOptions);
       const scriptText = await scriptResponse.text();
 
-      const usesDNSRoutes =
-        !!clusterInfo && !isVersionLower(clusterInfo.version, "v4.1.0");
-      const services = yamlToServices(fdlText, scriptText, usesDNSRoutes);
+      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), dnsRoutesEnabled);
       if (!services?.length) throw Error("No services found");
 
       const service = services[0];
@@ -126,7 +125,7 @@ function FlowsFormPopover() {
         environment: {
           variables: {
             ...service.environment.variables,
-            NODE_RED_BASE_URL: usesDNSRoutes
+            NODE_RED_BASE_URL: dnsRoutesEnabled
               ? "/"
               : `/system/services/${serviceName}/exposed`,
             NODE_RED_DIRECTORY: workspaceDir,
