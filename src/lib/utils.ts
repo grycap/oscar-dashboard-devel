@@ -12,10 +12,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getExposedServiceUrl(endpoint: string, serviceName: string, path = "") {
+export const DNS_EXPOSED_SERVICES_VERSION = "v4.2.0";
+
+export function usesDNSRoutes(version?: string | null) {
+  return !!version && !isVersionLower(version, DNS_EXPOSED_SERVICES_VERSION);
+}
+
+export function getExposedServiceUrl(
+  endpoint: string,
+  serviceName: string,
+  path = "",
+  clusterVersion?: string | null,
+) {
   const url = new URL(endpoint);
-  url.hostname = `${serviceName}.${url.hostname}`;
-  url.pathname = "/";
+  if (usesDNSRoutes(clusterVersion)) {
+    url.hostname = `${serviceName}.${url.hostname}`;
+    url.pathname = "/";
+  } else {
+    url.pathname = `/system/services/${serviceName}/exposed/`;
+  }
   url.search = "";
   url.hash = "";
   return new URL(`./${path.replace(/^\/+/, "")}`, url).toString();

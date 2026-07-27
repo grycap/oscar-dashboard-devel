@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
-import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, isVersionLower } from "@/lib/utils";
+import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, usesDNSRoutes } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Service } from "@/pages/ui/services/models/service";
@@ -105,7 +105,8 @@ function JunoFormPopover() {
       const scriptResponse = await fetch(scriptUrl, fetchFromGitHubOptions);
       const scriptText = await scriptResponse.text();
 
-      const services = yamlToServices(fdlText, scriptText, (!!clusterInfo && !isVersionLower(clusterInfo.version, "v4.1.0")));
+      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
+      const services = yamlToServices(fdlText, scriptText, dnsRoutesEnabled);
       if (!services?.length) throw Error("No services found");
       
       const service = services[0];
@@ -127,12 +128,14 @@ function JunoFormPopover() {
         cpu: formData.cpuCores,
         expose: {
           ...service.expose,
-          rewrite_target: false,
+          ...(dnsRoutesEnabled ? { rewrite_target: false } : {}),
         },
         environment: {
           variables: {
             ...service.environment.variables,
-            JHUB_BASE_URL: "/",
+            JHUB_BASE_URL: dnsRoutesEnabled
+              ? "/"
+              : `/system/services/${serviceName}/exposed`,
             JUPYTER_DIRECTORY: workspaceDir,
             GRANT_SUDO: "yes",
             OSCAR_ENDPOINT: authData.endpoint,
