@@ -13,7 +13,7 @@ import createServiceApi from "@/api/services/createServiceApi";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import RequestButton from "@/components/RequestButton";
-import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, usesDNSRoutes } from "@/lib/utils";
+import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import { errorMessage } from "@/lib/error";
 import StorageSelectForm, { StorageSelectFormRef } from "@/components/StorageSelectForm";
 
@@ -103,7 +103,7 @@ function FlowsFormPopover() {
       const scriptText = await scriptResponse.text();
 
       const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
-      const services = yamlToServices(fdlText, scriptText, dnsRoutesEnabled);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version));
       if (!services?.length) throw Error("No services found");
 
       const service = services[0];

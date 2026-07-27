@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
-import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, usesDNSRoutes } from "@/lib/utils";
+import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Service } from "@/pages/ui/services/models/service";
@@ -106,7 +106,7 @@ function JunoFormPopover() {
       const scriptText = await scriptResponse.text();
 
       const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
-      const services = yamlToServices(fdlText, scriptText, dnsRoutesEnabled);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version));
       if (!services?.length) throw Error("No services found");
       
       const service = services[0];

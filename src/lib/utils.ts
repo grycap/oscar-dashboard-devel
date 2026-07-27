@@ -36,6 +36,10 @@ export function getExposedServiceUrl(
   return new URL(`./${path.replace(/^\/+/, "")}`, url).toString();
 }
 
+export function useArrayPorts(version?: string | null) {
+  return !!version && !isVersionLower(version, "v4.1.0");
+}
+
 /**
  * Parses a Kubernetes CPU string and returns the value in millicores.
  * Supported formats: "2" (cores), "1500m" (millicores)

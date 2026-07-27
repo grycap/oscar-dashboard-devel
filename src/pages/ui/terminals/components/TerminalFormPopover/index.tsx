@@ -28,6 +28,7 @@ import {
   generateReadableName,
   genRandomString,
   getAllowedVOs,
+  useArrayPorts,
   usesDNSRoutes,
 } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
@@ -135,7 +136,7 @@ function TerminalFormPopover() {
       const scriptText = await scriptResponse.text();
 
       const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
-      const services = yamlToServices(fdlText, scriptText, dnsRoutesEnabled);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version));
 
       if (!services?.length) {
         throw new Error("No services found");
