@@ -18,7 +18,7 @@ import { alert } from "@/lib/alert";
 import RequestButton from "@/components/RequestButton";
 import yamlToServices from "./utils/yamlToService";
 import { useAuth } from "@/contexts/AuthContext";
-import { getFDLAndScriptText, usesDNSRoutes } from "@/lib/utils";
+import { getFDLAndScriptText, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 
 function FDLForm() {
   const { showFDLModal, setShowFDLModal, refreshServices, formService } =
@@ -58,7 +58,7 @@ function FDLForm() {
       return;
     }
 
-    const services = yamlToServices(fdl, script, usesDNSRoutes(clusterInfo?.version));
+    const services = yamlToServices(fdl, script, useArrayPorts(clusterInfo?.version), usesDNSRoutes(clusterInfo?.version));
     if (!services) {
       return;
     }

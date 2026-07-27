@@ -136,7 +136,7 @@ function TerminalFormPopover() {
       const scriptText = await scriptResponse.text();
 
       const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
-      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version));
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), dnsRoutesEnabled);
 
       if (!services?.length) {
         throw new Error("No services found");
