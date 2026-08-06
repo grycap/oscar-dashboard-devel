@@ -99,6 +99,9 @@ function AgentFormPopover() {
   }, [isOpen]);
 
   const handleDeploy = async () => {
+    if (!systemConfig || !clusterInfo) {
+      return
+    }
     const newErrors = {
       name: !formData.name,
       cpuCores: !formData.cpuCores,
@@ -131,8 +134,8 @@ function AgentFormPopover() {
       const services = yamlToServices(
         fdlText,
         scriptText,
-        useArrayPorts(clusterInfo?.version),
-        usesDNSRoutes(clusterInfo?.version)
+        useArrayPorts(clusterInfo.version),
+        usesDNSRoutes(systemConfig.config),
       );
       if (!services?.length) throw Error("No services found");
 

@@ -27,11 +27,11 @@ function ServiceRedirectButton({
   const [isAlive, setIsAlive] = useState<boolean | null>(null);
   const [redirectLink, setRedirectLink] = useState<string>("");
   const [authActionLink, setAuthActionLink] = useState<string>("");
-  const { authData, clusterInfo } = useAuth();
+  const { authData, systemConfig, clusterInfo } = useAuth();
 
   const safeHealthcheckPath = healthcheckPath.startsWith("/") ? healthcheckPath.slice(1).trim() : healthcheckPath
-  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath, clusterInfo?.version);
-  const exposedBaseLink = getExposedServiceUrl(endpoint, service.name, "", clusterInfo?.version);
+  const healthcheckLink = getExposedServiceUrl(endpoint, service.name, safeHealthcheckPath, systemConfig?.config);
+  const exposedBaseLink = getExposedServiceUrl(endpoint, service.name, "", systemConfig?.config);
   const serviceIsStopped = service.deployment?.state === "stopped";
       
   /**
@@ -258,6 +258,9 @@ function ServiceRedirectButton({
 
   useEffect(() => {
     let isMounted = true;
+    if (!systemConfig || !clusterInfo) {
+      return;
+    }
 
     const buildRedirectLink = async () => {
       const interpolatedArgs = await interpolateVariables(
@@ -319,7 +322,7 @@ function ServiceRedirectButton({
     return () => {
       isMounted = false;
     };
-  }, [service, endpoint, additionalExposedPathArgs, authActionPathArgs, targetExposedPath, healthcheckPath, serviceIsStopped]);
+  }, [systemConfig, clusterInfo, service, endpoint, additionalExposedPathArgs, authActionPathArgs, targetExposedPath, healthcheckPath, serviceIsStopped]);
 
   if (serviceIsStopped) {
     return (

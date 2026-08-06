@@ -25,7 +25,7 @@ function FDLForm() {
     useServicesContext();
   const [selectedTab, setSelectedTab] = useState<"fdl" | "script">("fdl");
   const [editorKey, setEditorKey] = useState(0);
-  const { clusterInfo } = useAuth();
+  const { systemConfig, clusterInfo } = useAuth();
 
   const existingService = formService && formService.name && formService.name !== "" && formService.script && formService.script !== "script.sh";
 
@@ -58,7 +58,11 @@ function FDLForm() {
       return;
     }
 
-    const services = yamlToServices(fdl, script, useArrayPorts(clusterInfo?.version), usesDNSRoutes(clusterInfo?.version));
+    if (!systemConfig || !clusterInfo) {
+      return;
+    }
+
+    const services = yamlToServices(fdl, script, useArrayPorts(clusterInfo.version), usesDNSRoutes(systemConfig.config));
     if (!services) {
       return;
     }

@@ -106,8 +106,9 @@ function FileBrowserFormPopover() {
   }, [isOpen]);
 
   const handleDeploy = async () => {
-
-    
+    if (!systemConfig || !clusterInfo) {
+      return;
+    }
 
     const storageValid = storageFormRef.current ? storageFormRef.current.validate() : false;
     const storageConfig = storageFormRef.current ? storageFormRef.current!.getStorageConfig() : { mainStorage: "none", bucket: "", volume: "", volumeSize: "" };
@@ -140,7 +141,7 @@ function FileBrowserFormPopover() {
         fetchFromGitHubOptions
       );
       const scriptText = await scriptResponse.text();
-      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), usesDNSRoutes(clusterInfo?.version));
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo.version), usesDNSRoutes(systemConfig.config));
 
       if (!services?.length) {
         throw new Error("No services found");

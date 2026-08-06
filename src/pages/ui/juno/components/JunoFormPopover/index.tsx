@@ -78,6 +78,9 @@ function JunoFormPopover() {
   }, [isOpen]);
 
   const handleDeploy = async () => {
+    if (!systemConfig || !clusterInfo) {
+      return;
+    }
     const newErrors = {
       name: !formData.name,
       cpuCores: !formData.cpuCores,
@@ -105,8 +108,8 @@ function JunoFormPopover() {
       const scriptResponse = await fetch(scriptUrl, fetchFromGitHubOptions);
       const scriptText = await scriptResponse.text();
 
-      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
-      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), dnsRoutesEnabled);
+      const dnsRoutesEnabled = usesDNSRoutes(systemConfig.config);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo.version), dnsRoutesEnabled);
       if (!services?.length) throw Error("No services found");
       
       const service = services[0];

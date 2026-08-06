@@ -25,7 +25,7 @@ function HubView() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGridView, setIsGridView] = useState(true);
   const [selectedSource, setSelectedSource] = useState<GitHubSource>(DEFAULT_SOURCES[0]);
-  const { clusterInfo } = useAuth();
+  const { systemConfig, clusterInfo } = useAuth();
 
   const fetchService = useCallback(
     async (
@@ -33,7 +33,7 @@ function HubView() {
     ): Promise<Service | undefined> => {
       const response = await fetch(roCrateServiceDef.fdlUrl);
       if (response.ok) {
-        const service = yamlToServices(await response.text(), "", useArrayPorts(clusterInfo?.version), usesDNSRoutes(clusterInfo?.version))![0];
+        const service = yamlToServices(await response.text(), "", useArrayPorts(clusterInfo?.version), usesDNSRoutes(systemConfig?.config))![0];
         const services: Service = {
           ...service,
           environment: {
@@ -51,7 +51,7 @@ function HubView() {
       }
       return undefined;
     },
-    []
+    [clusterInfo, systemConfig]
   );
 
   const fetchData = useCallback(async () => {

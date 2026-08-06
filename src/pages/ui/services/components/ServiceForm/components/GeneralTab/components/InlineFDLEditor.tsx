@@ -15,7 +15,7 @@ import createServiceApi from "@/api/services/createServiceApi";
 
 function InlineFDLEditor({ mode = "api" }: { mode?: "api" | "inline-edit" }) {
   const { formService, setFormService, refreshServices } = useServicesContext();
-  const { clusterInfo } = useAuth();
+  const { systemConfig, clusterInfo } = useAuth();
   const existingService = useMemo(
     () =>
       !!(
@@ -69,11 +69,15 @@ function InlineFDLEditor({ mode = "api" }: { mode?: "api" | "inline-edit" }) {
       return;
     }
 
+    if (!systemConfig || !clusterInfo) {
+      return;
+    }
+
     const services = yamlToServices(
       fdl,
       script,
-      useArrayPorts(clusterInfo?.version),
-      usesDNSRoutes(clusterInfo?.version)
+      useArrayPorts(clusterInfo.version),
+      usesDNSRoutes(systemConfig.config)
     );
     if (!services || services.length === 0) {
       return;
