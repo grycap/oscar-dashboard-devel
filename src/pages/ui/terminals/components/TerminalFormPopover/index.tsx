@@ -28,7 +28,8 @@ import {
   generateReadableName,
   genRandomString,
   getAllowedVOs,
-  isVersionLower,
+  useArrayPorts,
+  usesDNSRoutes,
 } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
@@ -134,7 +135,8 @@ function TerminalFormPopover() {
       );
       const scriptText = await scriptResponse.text();
 
-      const services = yamlToServices(fdlText, scriptText, (!!clusterInfo && !isVersionLower(clusterInfo.version, "v4.1.0")));
+      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), dnsRoutesEnabled);
 
       if (!services?.length) {
         throw new Error("No services found");
@@ -167,7 +169,9 @@ function TerminalFormPopover() {
           variables: {
             ...service.environment.variables,
             SERVICE_NAME: serviceName,
-            BASE_PATH: `/system/services/${serviceName}/exposed`,
+            BASE_PATH: dnsRoutesEnabled
+              ? "/"
+              : `/system/services/${serviceName}/exposed`,
             WORKSPACE_DIR: workspaceDir,
           },
           secrets: formData.refreshToken

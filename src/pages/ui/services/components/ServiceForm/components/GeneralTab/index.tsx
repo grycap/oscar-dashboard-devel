@@ -28,7 +28,7 @@ import EnviromentSecrets from "./components/EnviromentSecrets";
 import Annotations from "./components/Annotations";
 
 import { AllowedUsersPopover } from "./components/AllowedUsersPopover";
-import { downloadString, getAllowedVOs, getFDLAndScriptText } from "@/lib/utils";
+import { downloadString, getAllowedVOs, getExposedServiceUrl, getFDLAndScriptText } from "@/lib/utils";
 import { useEffect } from "react";
 
 function ServiceGeneralTab() {
@@ -36,7 +36,7 @@ function ServiceGeneralTab() {
     useServicesContext();
 
   const { handleChange, onBlur, errors } = formFunctions;
-  const { systemConfig, authData } = useAuth();
+  const { systemConfig, authData, clusterInfo } = useAuth();
   const voGroups = getAllowedVOs(systemConfig, authData);
   function voGroupsIsEmpthy(){
     if( voGroups === undefined){ return true}
@@ -244,9 +244,7 @@ const serviceToDownload = getFDLAndScriptText(formService)
                 <strong>Exposed:</strong>
                 {formService.expose?.api_port ? (
                   <Link
-                    to={`${
-                      authData.endpoint
-                    }/system/services/${formService.name}/exposed/`}
+                    to={getExposedServiceUrl(authData.endpoint, formService.name, "", clusterInfo?.version)}
                     target="_blank"
                   >
                     <ExternalLink size={18} />
@@ -352,7 +350,7 @@ const serviceToDownload = getFDLAndScriptText(formService)
                 <Button
                   className="w-full sm:w-auto flex flex-row gap-2 items-center justify-center"
                   variant="secondary"
-                  onClick={() => {downloadString(serviceToDownload.scriptText, `${formService.name}.yaml`, "application/yaml")}}
+                  onClick={() => {downloadString(serviceToDownload.fdlText, `${formService.name}.yaml`, "application/yaml")}}
                 >
                   <Download size={16} />
                   Download FDL

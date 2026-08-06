@@ -3,7 +3,7 @@ import { Service, ServiceVisibility, TmpService } from "../../../models/service"
 import { alert } from "@/lib/alert";
 import { errorMessage } from "@/lib/error";
 
-const yamlToServices = (fdlString: string, scriptString: string, exposePortsToArray = false) => {
+const yamlToServices = (fdlString: string, scriptString: string, exposePortsToArray = false, exposedDNSRoutesSupport = false) => {
   try {
     const normalizePortList = (value: unknown): number[] | undefined => {
       if (typeof value === "string" || typeof value === "number") {
@@ -46,6 +46,11 @@ const yamlToServices = (fdlString: string, scriptString: string, exposePortsToAr
             if (normalizedApiPort) {
               serviceParams.expose.api_port = normalizedApiPort;
             }
+          }
+        }
+        if (serviceParams.expose && exposedDNSRoutesSupport) {
+          if (serviceParams.expose.rewrite_target) {
+            serviceParams.expose.rewrite_target = false;
           }
         }
         services.push(serviceParams as Service);

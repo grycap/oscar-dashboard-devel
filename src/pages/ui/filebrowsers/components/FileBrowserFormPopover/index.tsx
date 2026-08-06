@@ -27,7 +27,8 @@ import {
   generateReadableName,
   genRandomString,
   getAllowedVOs,
-  isVersionLower,
+  useArrayPorts,
+  usesDNSRoutes,
 } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
@@ -139,7 +140,7 @@ function FileBrowserFormPopover() {
         fetchFromGitHubOptions
       );
       const scriptText = await scriptResponse.text();
-      const services = yamlToServices(fdlText, scriptText, (!!clusterInfo && !isVersionLower(clusterInfo.version, "v4.1.0")));
+      const services = yamlToServices(fdlText, scriptText, useArrayPorts(clusterInfo?.version), usesDNSRoutes(clusterInfo?.version));
 
       if (!services?.length) {
         throw new Error("No services found");

@@ -8,7 +8,7 @@ import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import updateServiceApi from "@/api/services/updateServiceApi";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import { alert } from "@/lib/alert";
-import { getFDLAndScriptText, isVersionLower } from "@/lib/utils";
+import { getFDLAndScriptText, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import getServiceApi from "@/api/services/getServiceApi";
 import createServiceApi from "@/api/services/createServiceApi";
@@ -72,7 +72,8 @@ function InlineFDLEditor({ mode = "api" }: { mode?: "api" | "inline-edit" }) {
     const services = yamlToServices(
       fdl,
       script,
-      !!clusterInfo && !isVersionLower(clusterInfo.version, "v4.1.0")
+      useArrayPorts(clusterInfo?.version),
+      usesDNSRoutes(clusterInfo?.version)
     );
     if (!services || services.length === 0) {
       return;
