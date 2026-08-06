@@ -14,18 +14,19 @@ export function cn(...inputs: ClassValue[]) {
 
 export const DNS_EXPOSED_SERVICES_VERSION = "v4.2.0";
 
-export function usesDNSRoutes(version?: string | null) {
-  return !!version && !isVersionLower(version, DNS_EXPOSED_SERVICES_VERSION);
+export function usesDNSRoutes(systemConfig: SystemConfig | null | undefined): boolean {
+  console.log("usesDNSRoutes: systemConfig", systemConfig?.exposed_services_use_subdomain_route);
+  return !!systemConfig && systemConfig.exposed_services_use_subdomain_route === true;
 }
 
 export function getExposedServiceUrl(
   endpoint: string,
   serviceName: string,
   path = "",
-  clusterVersion?: string | null,
+  systemConfig: SystemConfig | null | undefined,
 ) {
   const url = new URL(endpoint);
-  if (usesDNSRoutes(clusterVersion)) {
+  if (usesDNSRoutes(systemConfig)) {
     url.hostname = `${serviceName}.${url.hostname}`;
     url.pathname = "/";
   } else {

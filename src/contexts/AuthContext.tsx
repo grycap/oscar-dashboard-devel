@@ -120,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password: authData.password,
         token: authData?.token,
       }));
+      await handleGetSystemConfig();
     } catch (error) {
       setAuthData({
         user: "",

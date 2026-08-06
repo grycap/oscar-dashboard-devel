@@ -32,7 +32,7 @@ interface HubServiceConfPopoverProps {
 }
 
 function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, setIsOpen, className = "", variant = "default", title = "Deploy Service" }: HubServiceConfPopoverProps) {
-  const {systemConfig, authData, clusterInfo } = useAuth();
+  const {systemConfig, authData } = useAuth();
   const { refreshServices } = useServicesContext();
   const [newBucket, setNewBucket] = useState(false);
   const buckets = useGetPrivateBuckets(isOpen);
@@ -109,7 +109,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       `/services/${serviceName}/exposed`
     );
     if (newValue.includes(`/services/${serviceName}/exposed`)) {
-      const dnsRoutesEnabled = usesDNSRoutes(clusterInfo?.version);
+      const dnsRoutesEnabled = usesDNSRoutes(systemConfig?.config);
       if (dnsRoutesEnabled) {
         formData.enviromentVars = {
           ...formData.enviromentVars,
