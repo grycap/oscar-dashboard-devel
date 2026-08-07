@@ -36,7 +36,6 @@ import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import {
   Service,
 } from "@/pages/ui/services/models/service";
-import OscarColors from "@/styles";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -236,7 +235,7 @@ function TerminalFormPopover() {
       <DialogContent className="max-h-[90%] max-w-[600px] gap-4 flex flex-col">
         <DialogHeader>
           <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
               Terminal Instance Configuration
             </span>
           </DialogTitle>
