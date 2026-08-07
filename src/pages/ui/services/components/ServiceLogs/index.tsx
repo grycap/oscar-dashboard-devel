@@ -11,7 +11,6 @@ import DeleteDialog from "@/components/DeleteDialog";
 import { deleteLogApi } from "@/api/logs/deleteLog";
 import { alert } from "@/lib/alert";
 import deleteServiceLogsApi from "@/api/logs/deleteServiceLogs";
-import OscarColors from "@/styles";
 import { delay } from "@/lib/utils";
 import { errorMessage } from "@/lib/error";
 
@@ -176,13 +175,13 @@ export default function ServiceLogs() {
 
       {logsAreLoading ?
         <div className="absolute inset-0 flex items-center justify-center items-center  ">
-          <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+          <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         </div>
       :
       <>
       {nextExecution && (
         <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center z-50 backdrop-blur-xs">
-          <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+          <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         </div>
       )}
 

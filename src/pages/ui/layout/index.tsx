@@ -1,6 +1,5 @@
 import AppSidebar from "@/components/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import OscarColors, { ColorWithOpacity, OscarStyles } from "@/styles";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 function AppLayout() {
@@ -16,15 +15,7 @@ function AppLayout() {
       >
         <AppSidebar />
         <main
-          style={{
-            flex: 1,
-            display: "flex",
-            marginTop: 10,
-            borderTopLeftRadius: 8,
-            background: ColorWithOpacity(OscarColors.Gray1, 0.5),
-            border: OscarStyles.border,
-          }}
-          className="overflow-y-auto"
+          className="flex flex-1 mt-2.5 rounded-tl-lg bg-oscar-gray-1/50 border border-border overflow-y-auto"
         >
           <Outlet />
         </main>

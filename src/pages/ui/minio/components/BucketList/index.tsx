@@ -8,7 +8,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useMinio } from "@/contexts/Minio/MinioContext";
 import { isUserOscar, shortenFullname } from "@/lib/utils";
 import { Bucket_visibility } from "@/pages/ui/services/models/service";
-import OscarColors from "@/styles";
 import { Bucket } from "@aws-sdk/client-s3";
 import { AlertCircle, ExternalLinkIcon, LoaderPinwheel, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -119,7 +118,7 @@ export default function BucketList() {
       />
       {bucketsAreLoading ? 
       <div className="flex items-center justify-center h-screen">
-        <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+        <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
       </div>
       : bucketsLoadingError ? (
         loadingErrorView()
@@ -149,7 +148,7 @@ export default function BucketList() {
                 {row.from_service ?
                   <Link
                     to={`/ui/services/${row.from_service}/settings`}
-                    className="grid grid-cols-[auto_1fr] no-underline hover:underline underline-offset-2 border-gray-400"
+                    className="grid grid-cols-[auto_1fr] no-underline hover:underline underline-offset-2 border-slate-400"
                   >
                     <span className="truncate min-w-[70px]">
                       {row.from_service}
@@ -188,7 +187,7 @@ export default function BucketList() {
                       setItemsToDelete([...itemsToDelete, bucket]);
                     }}
                   >
-                    <Trash color={OscarColors.Red} />
+                    <Trash className="text-oscar-red" />
                   </Button>
                 </>
               );

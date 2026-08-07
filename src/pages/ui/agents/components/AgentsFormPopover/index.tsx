@@ -16,7 +16,6 @@ import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToServi
 import { defaultService } from "@/pages/ui/services/components/ServiceForm/utils/initialData";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Service } from "@/pages/ui/services/models/service";
-import OscarColors from "@/styles";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import AgentsModelForm, { AgentsModelFormRef, agentType } from "../AgentsModelForm";
@@ -234,7 +233,7 @@ function AgentFormPopover() {
       <DialogContent className="max-w-[620px] max-h-[90%] gap-4 flex flex-col">
         <DialogHeader>
           <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
               Hermes Agent Configuration
             </span>
           </DialogTitle>

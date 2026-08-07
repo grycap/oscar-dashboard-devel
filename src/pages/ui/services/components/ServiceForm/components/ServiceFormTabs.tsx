@@ -1,4 +1,3 @@
-import { OscarStyles } from "@/styles";
 import { ServiceFormTab } from "../../../models/service";
 import { Dispatch, SetStateAction } from "react";
 
@@ -10,13 +9,7 @@ interface Props {
 function ServiceFormTabs({ tab: activeTab, setTab }: Props) {
   return (
     <div
-      style={{
-        background: "white",
-        borderBottom: OscarStyles.border,
-        display: "flex",
-        flexDirection: "row",
-        padding: "0 16px",
-      }}
+      className="flex flex-row bg-white border-b border-border px-4"
     >
       {Object.keys(ServiceFormTab)
         .filter((tab) => isNaN(Number(tab)))

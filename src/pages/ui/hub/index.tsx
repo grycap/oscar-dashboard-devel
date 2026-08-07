@@ -7,13 +7,12 @@ import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SelectIcon } from "@radix-ui/react-select";
 import GenericTopbar from "@/components/Topbar";
-import OscarColors from "@/styles";
 import yamlToServices from "../services/components/FDL/utils/yamlToService";
 import { Service } from "../services/models/service";
 import GenericTable from "@/components/Table";
 import HubTableActions from "./components/HubTableActions";
 import LayoutSelect from "@/components/LayoutSelect";
-import { getHubServiceTypeTagColor, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
+import { cn, getHubServiceTypeTagColor, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import HubSrcPopoverButton, { DEFAULT_SOURCES, GitHubSource } from "./components/HubSrcPopoverButton";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -129,11 +128,10 @@ function HubView() {
                       serviceType: checked ? "asynchronous" : "",
                     }));
                   }}
-                  style={{ fontSize: 16 }}
                 />
                 <label
                   htmlFor="asyncServices"
-                  style={{ fontSize: 14}}
+                  className="text-sm"
                 >Asynchronous services</label>
               </div>
               <div className="flex flex-row gap-2 items-center p-2">
@@ -146,11 +144,10 @@ function HubView() {
                       serviceType: checked ? "synchronous" : "",
                     }));
                   }}
-                  style={{ fontSize: 16 }}
                 />
                 <label
                   htmlFor="syncServices"
-                  style={{ fontSize: 14}}
+                  className="text-sm"
                 >Synchronous services</label>
               </div>
               <div className="flex flex-row gap-2 items-center p-2">
@@ -163,11 +160,10 @@ function HubView() {
                       serviceType: checked ? "exposed" : "",
                     }));
                   }}
-                  style={{ fontSize: 16 }}
                 />
                 <label
                   htmlFor="exposedServices"
-                  style={{ fontSize: 14}}
+                  className="text-sm"
                 >Exposed services</label>
               </div>
             </SelectContent>
@@ -189,10 +185,10 @@ function HubView() {
           />
         </div>
       </GenericTopbar>
-      <div className={`grid grid-cols-1 gap-6 ${isGridView ? `w-[95%] max-w-[1600px]` : 'w-full'} mx-auto mt-4 min-w-[300px] content-start`}>
+      <div className={cn("grid grid-cols-1 gap-6 mx-auto mt-4 min-w-[300px] content-start", isGridView ? "w-[95%] max-w-[1600px]" : "w-full")}>
         {isLoading ? (
         <div className="flex items-center justify-center h-[80vh]">
-            <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         </div>) : (
         <div className="flex flex-wrap gap-1 justify-center sm:justify-start gap-6">
           {
@@ -257,14 +253,14 @@ function HubView() {
               )
             ) : (
             <div className="w-full text-center py-8">
-              <p className="text-gray-500 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {searchQuery.trim() 
                   ? `No services found matching "${searchQuery}"`
                   : "No services available"
                 }
               </p>
               {searchQuery.trim() && (
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-muted-foreground/70 text-sm mt-2">
                   Try searching with different keywords or clear the search to see all services.
                 </p>
               )}

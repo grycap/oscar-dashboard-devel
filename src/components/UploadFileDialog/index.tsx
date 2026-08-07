@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UploadBatchProgress } from "@/contexts/Minio/MinioContext";
-import OscarColors from "@/styles";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 
 export default function UploadFileDialog({
@@ -60,36 +60,33 @@ export default function UploadFileDialog({
         </DialogHeader>
 
         <div className="w-full">
-          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+          <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
             <div
-              className=" h-2.5 rounded-full transition-all duration-300 ease-out"
-              style={{
-                width: `${progressPercent}%`,
-                backgroundColor: failedResults.length > 0 ? OscarColors.Red : OscarColors.Green4,
-              }}
+              className={cn("h-2.5 rounded-full transition-all duration-300 ease-out", failedResults.length > 0 ? "bg-oscar-red" : "bg-oscar-green-4")}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <p className="text-sm text-gray-600 mt-2 text-center">
+          <p className="text-sm text-muted-foreground mt-2 text-center">
             {progressPercent}% ({progress?.completed ?? 0}/{progress?.results.length ?? 0})
           </p>
         </div>
 
         {progress?.currentFileName && (
-          <div className="text-sm text-center text-gray-600">
-            Uploading: <span className="font-medium text-gray-900">{progress.currentFileName}</span>
+          <div className="text-sm text-center text-muted-foreground">
+            Uploading: <span className="font-medium text-foreground">{progress.currentFileName}</span>
           </div>
         )}
 
         {!isUploading && !progress?.currentFileName && (
           <div className="grid gap-2 text-center">
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-muted-foreground">
               Successful: {((progress?.completed ?? 0) - (progress?.failed ?? 0))} | Failed: {progress?.failed ?? 0}
             </div>
             {failedResults.length > 0 && (
-              <div className="max-h-40 overflow-y-auto rounded border bg-gray-50 p-3 text-left">
+              <div className="max-h-40 overflow-y-auto rounded border bg-muted/50 p-3 text-left">
                 {failedResults.map((result) => (
-                  <div key={result.key} className="text-sm text-red-700">
-                    <span className="font-medium text-sm text-gray-700">{result.fileName}</span>: {result.error ?? "Upload failed"}
+                  <div key={result.key} className="text-sm text-destructive">
+                    <span className="font-medium text-sm text-muted-foreground">{result.fileName}</span>: {result.error ?? "Upload failed"}
                   </div>
                 ))}
               </div>

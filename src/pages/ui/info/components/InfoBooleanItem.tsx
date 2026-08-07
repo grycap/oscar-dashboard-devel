@@ -1,4 +1,3 @@
-import OscarColors from "@/styles";
 import { Check, X } from "lucide-react";
 
 type Props = {
@@ -8,18 +7,12 @@ type Props = {
 
 export default function InfoBooleanItem({ label, enabled }: Props) {
   return (
-    <div
-      style={{
-        display: "flex",
-        columnGap: 9,
-        alignItems: "center",
-      }}
-    >
-      <span style={{ fontSize: "13px", fontWeight: "500" }}>{label}</span>
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-medium">{label}</span>
       {enabled ? (
-        <Check size={16} color={OscarColors.Green4} style={{ marginTop: 2 }} />
+        <Check size={16} className="mt-0.5 text-oscar-green-4" />
       ) : (
-        <X size={16} color={OscarColors.Red} style={{ marginTop: 2 }} />
+        <X size={16} className="mt-0.5 text-oscar-red" />
       )}
     </div>
   );

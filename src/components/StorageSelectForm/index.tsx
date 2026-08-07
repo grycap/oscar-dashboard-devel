@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import useGetPrivateBuckets from "@/hooks/useGetPrivateBuckets";
 import useGetVolumes from "@/hooks/useGetVolumes";
 import CustomSwitch from "../CustomSwitch";
+import { cn } from "@/lib/utils";
 
 interface StorageConfig {
   bucket: string;
@@ -141,9 +142,6 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
           <Input
             type="input"
             onFocus={(e) => (e.target.type = "text")}
-            style={{ width: "100%",
-              fontWeight: "normal",
-              }}
             onChange={(e) => {
               setBucketValue(e.target?.value);
               setErrors((prev: any) => ({ ...prev, bucket: !e.target.value }));
@@ -158,7 +156,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
                 setBucketValue(value);
               }}
             >
-              <SelectTrigger className={errors.bucket ? "border-red-500 focus:border-red-500" : ""}>
+              <SelectTrigger className={cn(errors.bucket && "border-red-500 focus:border-red-500")}>
                 <SelectValue
                   placeholder="Select a bucket"
                 />
@@ -195,7 +193,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
         </div>
         <hr className="mb-2"/>
         {addVolume && (
-        <div className={`grid grid-cols-1 ${newVolume ? "sm:grid-cols-2" : ""} gap-2`}>
+        <div className={cn("grid grid-cols-1 gap-2", newVolume && "sm:grid-cols-2")}>
           <div className="flex flex-col gap-2">
           <CustomSwitch title="New Volume" checked={newVolume} onChange={() => { 
             const nextNewVolume = !newVolume;
@@ -211,9 +209,6 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
           <Input
             type="input"
             onFocus={(e) => (e.target.type = "text")}
-            style={{ width: "100%",
-              fontWeight: "normal",
-              }}
             onChange={(e) => {
               setVolumeValue(e.target?.value);
               setErrors((prev: any) => ({ ...prev, volume: !e.target.value }));
@@ -228,7 +223,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
                 setVolumeValue(value);
               }}
             >
-              <SelectTrigger className={errors.volume ? "border-red-500 focus:border-red-500" : ""}>
+              <SelectTrigger className={cn(errors.volume && "border-red-500 focus:border-red-500")}>
                 <SelectValue
                   placeholder="Select a volume"
                 />
@@ -255,9 +250,6 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
             <Input
               type="number"
               value={storageConfig.volumeSize}
-              style={{ width: "100%",
-                fontWeight: "normal",
-                }}
               onChange={(e) => {
                 setStorageConfig({ ...storageConfig, volumeSize: e.target?.value });
                 setErrors((prev: any) => ({ ...prev, volumeSize: !e.target.value || parseInt(e.target.value) < 1 }));

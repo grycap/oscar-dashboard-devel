@@ -12,7 +12,6 @@ import {
   Pencil,
   Search,
 } from "lucide-react";
-import OscarColors from "@/styles";
 import GenericTable from "@/components/Table";
 import { Input } from "@/components/ui/input";
 import DeleteDialog from "@/components/DeleteDialog";
@@ -81,7 +80,7 @@ export function AllowedUsersPopover({allowed_users, setAllowedUsersInExternalVar
       <DialogContent className="max-w-[800px] max-h-[90%] overflow-y-auto gap-4">
         <DialogHeader>
           <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
               {`Allowed users: `}
             </span>
           </DialogTitle>
@@ -125,7 +124,7 @@ export function AllowedUsersPopover({allowed_users, setAllowedUsersInExternalVar
                     onClick={() => setUsersToDelete([user])}
                     tooltipLabel="Delete"
                   >
-                    <Trash2 color={OscarColors.Red} />
+                    <Trash2 className="text-oscar-red" />
                   </Button>
                 ),
               },

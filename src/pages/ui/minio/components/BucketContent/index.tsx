@@ -239,7 +239,7 @@ export default function BucketContent() {
         />
         {isLoading ? 
           <div className="flex items-center justify-center h-full w-full">
-            <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
           </div>
         :
         <GenericTable
@@ -315,7 +315,7 @@ export default function BucketContent() {
                             setPreviewFile(item as BucketItem);
                           }}
                         >
-                          <Eye color={OscarColors.Blue} />
+                          <Eye className="text-oscar-blue" />
                         </Button>
                         <Button
                           variant="link"
@@ -332,7 +332,7 @@ export default function BucketContent() {
                       size="icon"
                       onClick={() => setItemsToDelete([...itemsToDelete, item as BucketItem])}
                     >
-                      <Trash color={OscarColors.Red} />
+                      <Trash className="text-oscar-red" />
                     </Button>
                   </>
                 );

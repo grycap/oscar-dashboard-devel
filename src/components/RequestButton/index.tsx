@@ -35,10 +35,10 @@ function RequestButton({
     <Button onClick={onClick} {...props} >
       <div className="grid grid-cols-[auto_1fr] gap-1 items-center">
         <motion.div
+          className="flex items-center overflow-hidden"
           initial={{ width: 0, opacity: 0 }}
           animate={isLoading ? { width: 24, opacity: 1 } : { width: 0, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          style={{ overflow: "hidden", display: "flex", alignItems: "center" }}
         >
           {isLoading && icon}
         </motion.div>

@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { alert } from "@/lib/alert";
 import { MoreVertical, Activity, Play, Key, Edit, Trash, RefreshCw, Square, Download } from "lucide-react";
-import OscarColors from "@/styles";
 import { ServiceLifecycleAction } from "@/api/services/lifecycleServiceApi";
 import { downloadString, getFDLAndScriptText } from "@/lib/utils";
 
@@ -125,7 +124,6 @@ export default function MoreActionsPopover({
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-destructive"
-          style={{ color: OscarColors.Red }}
           onClick={handleDeleteService}
         >
           <Trash className="mr-2 h-4 w-4" />

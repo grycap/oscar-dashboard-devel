@@ -4,7 +4,6 @@ import { Service } from "@/pages/ui/services/models/service";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Edit, MoreVertical, RefreshCcwIcon, Trash2 } from "lucide-react";
-import OscarColors from "@/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import SimpleServiceRedirectButton from "@/components/SimpleServiceRedirectButton";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
@@ -179,7 +178,7 @@ function AgentsDeployedlist({ services }: AgentsDeployedListProps) {
                   onClick={() => setServicesToDelete([item])}
                   tooltipLabel="Delete"
                 >
-                  <Trash2 color={OscarColors.Red} />
+                  <Trash2 className="text-oscar-red" />
                 </Button>
               ),
             },

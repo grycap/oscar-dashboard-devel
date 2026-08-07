@@ -32,7 +32,6 @@ import {
 import useServicesContext from "../../context/ServicesContext";
 import { Service } from "../../models/service";
 import { alert } from "@/lib/alert";
-import OscarColors from "@/styles";
 import { useAuth } from "@/contexts/AuthContext";
 import RequestButton from "@/components/RequestButton";
 import invokeServiceSync from "@/api/invoke/invokeServiceSync";
@@ -806,7 +805,7 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
       <DialogContent className="grid grid-cols-1 grid-rows-[auto_1fr_auto] w-screen sm:w-[70%] 2xl:w-[60%] h-[90%] sm:h-[80%] 2xl:h-[60%] gap-5">
         <DialogHeader>
           <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
               {`Invoke service: `}
             </span>
             {currentService?.name}

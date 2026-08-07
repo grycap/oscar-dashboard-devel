@@ -1,6 +1,6 @@
 import { ExternalLink, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { exposedServiceIsAlive, getExposedServiceUrl, isVersionLower } from "@/lib/utils";
+import { exposedServiceIsAlive, getExposedServiceUrl, isVersionLower, cn } from "@/lib/utils";
 import { Service } from "@/pages/ui/services/models/service";
 import OscarColors from "@/styles";
 import { useAuth } from "@/contexts/AuthContext";
@@ -327,7 +327,7 @@ function ServiceRedirectButton({
   if (serviceIsStopped) {
     return (
       <span
-        className={`${className ?? ""} cursor-not-allowed opacity-40`}
+        className={cn("cursor-not-allowed opacity-40", className)}
         title="Service is stopped"
       >
         <ExternalLink />
@@ -338,14 +338,13 @@ function ServiceRedirectButton({
   return isAlive && redirectLink ? (
     <button
       type="button"
-      className={`${className ?? ""}`}
+      className={cn("bg-transparent border-0 cursor-pointer p-0", className)}
       onClick={handleRedirectClick}
-      style={{ background: "none", border: 0, cursor: "pointer", padding: 0 }}
     >
       <ExternalLink />
     </button>
   ) : (
-    <Loader2 className={`animate-spin ${className ?? ""}`} color={OscarColors.DarkGrayText} />
+    <Loader2 className={cn("animate-spin", className)} color={OscarColors.DarkGrayText} />
   );
 }
 

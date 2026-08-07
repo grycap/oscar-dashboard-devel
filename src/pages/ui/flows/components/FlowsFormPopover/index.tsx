@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import OscarColors from "@/styles";
 import {  Dialog,  DialogContent, DialogFooter,  DialogHeader,  DialogTitle,  DialogTrigger} from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -186,7 +185,7 @@ function FlowsFormPopover() {
       <DialogContent className="max-w-[600px] max-h-[90%] gap-4 flex flex-col">
         <DialogHeader>
         <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
             {`Node-RED Instance Configuration`}
             </span>
         </DialogTitle>

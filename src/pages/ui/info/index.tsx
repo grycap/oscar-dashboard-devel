@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useMinio } from "@/contexts/Minio/MinioContext";
-import OscarColors, { OscarStyles } from "@/styles";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import InfoItem from "./components/InfoItem";
 import InfoBooleanItem from "./components/InfoBooleanItem";
 import InfoListItems from "./components/InfoListItems";
@@ -26,163 +27,102 @@ function InfoView() {
   if (!authData.authenticated) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-6 w-[95%] mx-auto mt-[40px] min-w-[300px] content-start">
-      <div className={(isBigScreen ? "flex justify-center": "")}>
-        <div className="max-w-[700px] w-full text-center sm:text-left">
-          <h1 style={{ fontSize: "24px", fontWeight: "500" }}>
+    <div className="container mx-auto min-w-[300px] space-y-6 py-6">
+      <div className={cn(isBigScreen && "flex justify-center")}>
+        <div className="w-full max-w-[700px] text-center sm:text-left">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Server information
           </h1>
         </div>
       </div>
-      <div className={"flex flex-wrap gap-5 w-full items-start" + (isBigScreen ? " justify-center": "")}>
-        <div className="max-w-[700px] w-full"
-          style={{
-            border: OscarStyles.border,
-            borderRadius: "8px",
-          }}
-        >
-          <div
-            style={{
-              background: OscarColors.Gray2,
-              padding: "16px",
-            }}
-          >
-            <h1 style={{ fontSize: "16px", fontWeight: "500" }}>
-              User
-            </h1>
-          </div>
-          <InfoItem label="User" value={user} enableCopy />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          {token ? (
+      <div className={cn("flex w-full flex-wrap items-start gap-6", isBigScreen && "justify-center")}>
+        <Card className="w-full max-w-[700px] overflow-hidden">
+          <CardHeader className="bg-muted py-4">
+            <CardTitle className="text-base font-medium">User</CardTitle>
+          </CardHeader>
+          <CardContent className="divide-y divide-border p-0">
+            <InfoItem label="User" value={user} enableCopy />
+            {token ? (
               <>
                 <InfoItem label="Subject ID" value={egiSession?.sub! ?? egiSession?.sub!} enableCopy />
-                <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
                 <InfoItem
                   label="Access Token"
                   value={token}
                   isPassword
                   enableCopy
                 />
-              {refresh_token && (
-                <>
-                <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-                <InfoItem
-                  label="Refresh Token"
-                  value={refresh_token}
-                  isPassword
-                  enableCopy
-                />
-                </>
-              )}
-              {!refresh_token && egiSession?.sub.endsWith("@egi.eu") && (
-                <>
-                  <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
+                {refresh_token && (
+                  <InfoItem
+                    label="Refresh Token"
+                    value={refresh_token}
+                    isPassword
+                    enableCopy
+                  />
+                )}
+                {!refresh_token && egiSession?.sub.endsWith("@egi.eu") && (
                   <InfoItem label="Refresh Token" value={"Get EGI Refresh Token"} link={{ url: env.EGI_ISSUER.replace(/\.eu.*$/, '.eu')+"/token", enableRedirectIcon: true }} />
-                </>
-              )}
+                )}
               </>
-            )
-            :
-            <>
+            ) : (
               <InfoItem label="Password" value={password} isPassword enableCopy />
-              <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-            </>
-          }
-        </div>
-        <div className="max-w-[700px] w-full"
-          style={{
-            border: OscarStyles.border,
-            borderRadius: "8px",
-          }}
-        >
-          <div
-            style={{
-              background: OscarColors.Gray2,
-              padding: "16px",
-            }}
-          >
-            <h1 style={{ fontSize: "16px", fontWeight: "500" }}>
-              OSCAR Cluster
-            </h1>
-          </div>
-          <InfoItem label="Endpoint" value={endpoint} enableCopy link={{url: endpoint, enableRedirectIcon: true}} />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          {systemConfig.config.oidc_groups.length > 1 ? 
-            <InfoListItems  label="Supported VOs" placeholder={systemConfig.config.oidc_groups[0] + '... '} values={systemConfig.config.oidc_groups} enableCopy />
-            :
-            <InfoItem label="Supported VOs" value={systemConfig.config.oidc_groups.toString()} enableCopy />
-          }
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <InfoItem label="Version" value={clusterInfo?.version!} enableCopy />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <InfoItem label="Git commit" value={clusterInfo?.git_commit! + "..."} link={{url: `https://github.com/grycap/oscar/commit/${clusterInfo?.git_commit!}`, enableRedirectIcon: true}} />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <div
-            style={{
-              padding: "16px",
-              display: "flex",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <InfoBooleanItem
-              label="GPU"
-              enabled={Boolean(systemConfig?.config.gpu_available)}
-            />
+            )}
+          </CardContent>
+        </Card>
+        <Card className="w-full max-w-[700px] overflow-hidden">
+          <CardHeader className="bg-muted py-4">
+            <CardTitle className="text-base font-medium">OSCAR Cluster</CardTitle>
+          </CardHeader>
+          <CardContent className="divide-y divide-border p-0">
+            <InfoItem label="Endpoint" value={endpoint} enableCopy link={{url: endpoint, enableRedirectIcon: true}} />
+            {systemConfig.config.oidc_groups.length > 1 ? 
+              <InfoListItems  label="Supported VOs" placeholder={systemConfig.config.oidc_groups[0] + '... '} values={systemConfig.config.oidc_groups} enableCopy />
+              :
+              <InfoItem label="Supported VOs" value={systemConfig.config.oidc_groups.toString()} enableCopy />
+            }
+            <InfoItem label="Version" value={clusterInfo?.version!} enableCopy />
+            <InfoItem label="Git commit" value={clusterInfo?.git_commit! + "..."} link={{url: `https://github.com/grycap/oscar/commit/${clusterInfo?.git_commit!}`, enableRedirectIcon: true}} />
+            <div className="flex justify-evenly p-4">
+              <InfoBooleanItem
+                label="GPU"
+                enabled={Boolean(systemConfig?.config.gpu_available)}
+              />
 
-            <InfoBooleanItem
-              label="InterLink"
-              enabled={Boolean(systemConfig?.config.interLink_available)}
+              <InfoBooleanItem
+                label="InterLink"
+                enabled={Boolean(systemConfig?.config.interLink_available)}
+              />
+              <InfoBooleanItem
+                label="Yunikorn"
+                enabled={Boolean(systemConfig?.config.yunikorn_enable)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full max-w-[700px] overflow-hidden">
+          <CardHeader className="bg-muted py-4">
+            <CardTitle className="text-base font-medium">MinIO</CardTitle>
+          </CardHeader>
+          <CardContent className="divide-y divide-border p-0">
+            <InfoItem label="Endpoint" value={providerInfo.endpoint} enableCopy link={{url: providerInfo.endpoint, enableRedirectIcon: true}} />
+            <InfoItem
+              label="Access key"
+              value={providerInfo.access_key}
+              enableCopy
             />
-            <InfoBooleanItem
-              label="Yunikorn"
-              enabled={Boolean(systemConfig?.config.yunikorn_enable)}
+            <InfoItem
+              label="Secret key"
+              value={providerInfo.secret_key}
+              isPassword
+              enableCopy
             />
-          </div>
-        </div>
-        <div className="max-w-[700px] w-full"
-          style={{
-            border: OscarStyles.border,
-            borderRadius: "8px",
-          }}
-        >
-          <div
-            style={{
-              background: OscarColors.Gray2,
-              padding: "16px",
-            }}
-          >
-            <h1 style={{ fontSize: "16px", fontWeight: "500" }}>
-              MinIO
-            </h1>
-          </div>
-          <InfoItem label="Endpoint" value={providerInfo.endpoint} enableCopy link={{url: providerInfo.endpoint, enableRedirectIcon: true}} />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <InfoItem
-            label="Access key"
-            value={providerInfo.access_key}
-            enableCopy
-          />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <InfoItem
-            label="Secret key"
-            value={providerInfo.secret_key}
-            isPassword
-            enableCopy
-          />
-          <div style={{ borderTop: OscarStyles.border, margin: "0px 16px" }} />
-          <div
-            style={{
-              padding: "16px",
-              display: "flex",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <InfoBooleanItem
-              label="SSL"
-              enabled={Boolean(providerInfo.endpoint.includes("http://"))}
-            />
-          </div>
-        </div>
+            <div className="flex justify-evenly p-4">
+              <InfoBooleanItem
+                label="SSL"
+                enabled={Boolean(providerInfo.endpoint.includes("http://"))}
+              />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

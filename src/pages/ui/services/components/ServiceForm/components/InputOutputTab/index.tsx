@@ -24,7 +24,6 @@ import {
 } from "@/pages/ui/services/models/service";
 import ServiceFormCell from "../FormCell";
 import Divider from "@/components/ui/divider";
-import OscarColors, { OscarStyles } from "@/styles";
 
 type IOType = "inputs" | "outputs";
 
@@ -83,46 +82,28 @@ export default function InputOutputEditor() {
   const renderIOItems = (type: IOType, items: StoragePath[]) => (
     <>
       {items.length === 0 && (
-        <div style={{ textAlign: "center", color: OscarColors.DarkGrayText }}>
+        <div className="text-center text-muted-foreground">
           No {type} defined yet.
         </div>
       )}
       {items.map((item, index) => (
         <div
           key={item.storage_provider + '-' + index}
-          style={{
-            border: OscarStyles.border,
-            background: "white",
-            height: 74,
-            borderRadius: 8,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: 16,
-            padding: "10px 14px",
-          }}
+          className="flex flex-row items-center justify-start gap-4 h-[74px] rounded-lg border border-border bg-white px-3.5 py-2.5"
         >
-          <div
-            style={{
-              display: "flex",
-              height: "100%",
-              flexDirection: "column",
-              justifyContent: "space-evenly",
-            }}
-          >
+          <div className="flex h-full flex-col justify-evenly">
             <h1>{item.storage_provider}</h1>
-            <h3 style={{ fontSize: 12, color: OscarColors.DarkGrayText }}>
+            <h3 className="text-xs text-muted-foreground">
               {item.path}
             </h3>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", rowGap: 8 }}>
+          <div className="flex flex-col gap-2">
             <div className="flex flex-row flex-wrap gap-2 items-baseline">
-              <h3 style={{ fontSize: 12, color: OscarColors.DarkGrayText }}>
+              <h3 className="text-xs text-muted-foreground">
                 Prefixes:
               </h3>
               {!item.prefix?.length && (
-                <h3 style={{ fontSize: 12, color: OscarColors.DarkGrayText }}>
+                <h3 className="text-xs text-muted-foreground">
                   None
                 </h3>
               )}
@@ -130,18 +111,9 @@ export default function InputOutputEditor() {
                 <Badge
                   key={`prefix-${prefixIndex}`}
                   variant="secondary"
-                  style={{
-                    maxWidth: "100px",
-                    overflow: "hidden",
-                  }}
+                  className="max-w-[100px] overflow-hidden"
                 >
-                  <span
-                    style={{
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                    }}
-                  >
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap">
                     {prefix}
                   </span>
                 </Badge>
@@ -151,11 +123,11 @@ export default function InputOutputEditor() {
               )}
             </div>
             <div className="flex flex-row flex-wrap gap-2 items-baseline">
-              <h3 style={{ fontSize: 12, color: OscarColors.DarkGrayText }}>
+              <h3 className="text-xs text-muted-foreground">
                 Suffixes:
               </h3>
               {!item.suffix?.length && (
-                <h3 style={{ fontSize: 12, color: OscarColors.DarkGrayText }}>
+                <h3 className="text-xs text-muted-foreground">
                   None
                 </h3>
               )}
@@ -163,18 +135,9 @@ export default function InputOutputEditor() {
                 <Badge
                   key={`suffix-${suffixIndex}`}
                   variant="secondary"
-                  style={{
-                    maxWidth: "100px",
-                    overflow: "hidden",
-                  }}
+                  className="max-w-[100px] overflow-hidden"
                 >
-                  <span
-                    style={{
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                    }}
-                  >
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap">
                     {suffix}
                   </span>
                 </Badge>
@@ -184,13 +147,10 @@ export default function InputOutputEditor() {
               )}
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <div className="flex flex-row">
             <Button
               id={`edit-input-output-button-${index}`}
-              style={{
-                minWidth: 40,
-                height: 40,
-              }}
+              className="min-w-10 h-10"
               size="icon"
               variant={"ghost"}
               onClick={() => openEditModal(type, item, index)}
@@ -199,15 +159,12 @@ export default function InputOutputEditor() {
             </Button>
             <Button
               id={`delete-input-output-button-${index}`}
-              style={{
-                minWidth: 40,
-                height: 40,
-              }}
+              className="min-w-10 h-10"
               size="icon"
               variant={"ghost"}
               onClick={() => handleDelete(type, index)}
             >
-              <Trash2 color={OscarColors.Red} />
+              <Trash2 className="text-oscar-red" />
             </Button>
           </div>
         </div>
@@ -216,14 +173,8 @@ export default function InputOutputEditor() {
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        flexGrow: 1,
-      }}
-    >
-      <div style={{ flexGrow: 1 }}>
+    <div className="flex flex-row flex-grow">
+      <div className="flex-grow">
         <ServiceFormCell
           title="Inputs"
           button={
@@ -237,14 +188,7 @@ export default function InputOutputEditor() {
             </Button>
           }
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 16,
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="flex flex-row gap-4 flex-wrap">
             {renderIOItems("inputs", formService.input)}
           </div>
         </ServiceFormCell>
@@ -252,7 +196,7 @@ export default function InputOutputEditor() {
 
       <Divider orientation="vertical" />
 
-      <div style={{ flexGrow: 1 }}>
+      <div className="flex-grow">
         <ServiceFormCell
           title="Outputs"
           button={
@@ -266,22 +210,14 @@ export default function InputOutputEditor() {
             </Button>
           }
         >
-          <div
-            style={{
-              display: "flex",
-              flexGrow: 1,
-              flexDirection: "row",
-              gap: 16,
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="flex flex-grow flex-row gap-4 flex-wrap">
             {renderIOItems("outputs", formService.output)}
           </div>
         </ServiceFormCell>
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent style={{ width: "500px" }}>
+        <DialogContent className="w-[500px]">
           <DialogHeader>
             <DialogTitle>
               {editingItem ? "Edit" : "Create"}{" "}

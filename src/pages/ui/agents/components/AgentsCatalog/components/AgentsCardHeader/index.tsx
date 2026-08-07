@@ -1,7 +1,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { RoCrateServiceDefinition } from "@/lib/roCrate";
-import OscarColors from "@/styles";
+import { cn } from "@/lib/utils";
 import { AlertTriangle, Info } from "lucide-react";
 
 
@@ -22,7 +22,7 @@ function AgentsCardHeader( { roCrateServiceDef, card } : { roCrateServiceDef: Ro
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="flex flex-row items-center gap-2" style={{ color: gpuWarning() ? "red" : OscarColors.DarkGrayText }} >
+          <span className={cn("flex flex-row items-center gap-2", gpuWarning() ? "text-red-600" : "text-muted-foreground")}>
             {gpuWarning() ? <AlertTriangle color="red" /> : card === 'info' ? <Info size={20} /> : null}
             {`${roCrateServiceDef.name}`}
           </span>

@@ -13,7 +13,7 @@ function ExpandCard({ title, className, children, setExpandedState }: { title: s
     <Card className={className}>
       <div
         onClick={() => {setExpandedSections(!expandedSections); setExpandedState && setExpandedState(!expandedSections);}}
-        className="cursor-pointer hover:bg-gray-100 transition px-4 py-3 rounded-md flex justify-between items-center"
+        className="cursor-pointer hover:bg-muted transition px-4 py-3 rounded-md flex justify-between items-center"
       >
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         {expandedSections ? <ChevronDown /> : <ChevronRight />}

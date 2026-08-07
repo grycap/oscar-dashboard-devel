@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { OscarStyles } from "@/styles";
+import { cn } from "@/lib/utils";
 import { ArrowDownAZ, ArrowUpAZ } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -100,15 +100,8 @@ function GenericTable<T extends object>({
     <div className="relative flex flex-col flex-grow flex-basis-0 overflow-hidden">
       <Table id="table">
         <TableHeader id="table-header" className="sticky top-0 z-0 h-[34px]">
-          <TableRow
-            style={{
-              background: "white",
-              padding: 0,
-              height: "34px",
-              borderBottom: OscarStyles.border,
-            }}
-          >
-            <TableHead className="w-[50px] h-[34px]" style={{ height: "34px" }}>
+          <TableRow className="h-[34px] border-b border-border bg-white p-0">
+            <TableHead className="w-[50px] h-[34px]">
               <Checkbox
                 checked={
                   sortedData.length > 0 &&
@@ -120,7 +113,7 @@ function GenericTable<T extends object>({
             {columns.map((column, index) => (
               <TableHead
                 key={index}
-                style={{ height: "34px" }}
+                className="h-[34px]"
                 onClick={() => handleHeaderClick(column)}
               >
                 <div className="flex items-center gap-1 cursor-pointer">
@@ -135,7 +128,7 @@ function GenericTable<T extends object>({
               </TableHead>
             ))}
             {actions && (
-              <TableHead className="text-right pr-6" style={{ height: "34px" }}>
+              <TableHead className="h-[34px] text-right pr-6">
                 Actions
               </TableHead>
             )}
@@ -146,7 +139,7 @@ function GenericTable<T extends object>({
             <TableRow
               key={rowIndex}
               onClick={() => onRowClick?.(item)}
-              className={`${onRowClick ? 'cursor-pointer' : ''}`}
+              className={cn(onRowClick && "cursor-pointer")}
             >
               <TableCell>
                 <Checkbox
@@ -195,17 +188,7 @@ function GenericTable<T extends object>({
               opacity: 0,
               y: 20,
             }}
-            style={{
-              borderTop: OscarStyles.border,
-              position: "sticky",
-              bottom: 0,
-              left: 0,
-              background: "white",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "4px",
-            }}
+            className="sticky bottom-0 left-0 flex items-center justify-between border-t border-border bg-white p-1"
           >
             <AnimatePresence mode="popLayout">
               {globalActions && (

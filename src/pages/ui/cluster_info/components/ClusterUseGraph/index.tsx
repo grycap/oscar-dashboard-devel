@@ -25,7 +25,6 @@ import { DATASET_LABELS, DatasetType, groupLogsByLabel, Scale } from "./componen
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import zoomPlugin from 'chartjs-plugin-zoom';
-import OscarColors from "@/styles";
 
 ChartJS.register(
   CategoryScale,
@@ -157,7 +156,7 @@ function ClusterUseGraph() {
   function loadingAnimation() {
     return (
       <div className="flex justify-center items-center">
-        <LoaderPinwheel className="animate-spin" size={40} color={OscarColors.Green3} />
+        <LoaderPinwheel className="animate-spin text-oscar-green-3" size={40} />
       </div>
     );
   }

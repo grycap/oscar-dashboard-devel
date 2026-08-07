@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/u
 import { Filter, LoaderPinwheel, Search } from "lucide-react";
 import { SelectIcon } from "@radix-ui/react-select";
 import AgentFormPopover from "./components/AgentsFormPopover";
-import OscarColors from "@/styles";
 import { parseAgentsROCrateDataJS, RoCrateAgentServiceDefinition } from "@/lib/roCrate";
 import { Service } from "../services/models/service";
 import yamlToServices from "../services/components/FDL/utils/yamlToService";
@@ -175,7 +174,7 @@ function AgentsView() {
       <TabsContent value="agents-deployed-list" className="w-full h-[calc(100%-3.5rem)]">
         {isLoading === true ?
           <div className="flex items-center justify-center h-full">
-            <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
           </div>
           :
           <AgentsDeployedlist services={filteredAgentsService} />
@@ -184,7 +183,7 @@ function AgentsView() {
       <TabsContent value="agents-catalog" className="w-full h-[calc(100%-3.5rem)]">
         {isLoading === true ?
           <div className="flex items-center justify-center h-full">
-            <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
           </div>
           :
           <AgentsCatalog filteredServices={filteredServices}/>

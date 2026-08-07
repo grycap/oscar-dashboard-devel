@@ -18,8 +18,8 @@ import {
   Route,
   Terminal,
 } from "lucide-react";
-import OscarColors from "@/styles";
 import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -166,15 +166,7 @@ function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            paddingTop: 6,
-            height: "59px",
-          }}
-        >
+        <div className="flex items-center gap-4 pt-1.5 h-[59px]">
           <AnimatePresence mode="popLayout">
             {open && (
               <a
@@ -199,11 +191,7 @@ function AppSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <Link
                       to={"/ui" + item.path}
-                      style={{
-                        textDecoration: "none",
-                        position: "relative",
-                        fontWeight: isActive ? "bold" : undefined,
-                      }}
+                      className={cn("relative no-underline", isActive && "font-bold")}
                     >
                       {item.icon}
                       <span className="text-[16px]">{item.title}</span>
@@ -226,7 +214,7 @@ function AppSidebar() {
                 rel="noopener noreferrer"
                 aria-label="Blog"
                 title="Blog"
-                style={{ color: "inherit", display: "inline-flex" }}
+                className="inline-flex text-current"
               >
                 <Globe size={18} />
               </a>
@@ -236,7 +224,7 @@ function AppSidebar() {
                 rel="noopener noreferrer"
                 aria-label="Documentation"
                 title="Documentation"
-                style={{ color: "inherit", display: "inline-flex" }}
+                className="inline-flex text-current"
               >
                 <BookOpen size={18} />
               </a>
@@ -246,7 +234,7 @@ function AppSidebar() {
                 rel="noopener noreferrer"
                 aria-label="Repository"
                 title="Repository"
-                style={{ color: "inherit", display: "inline-flex" }}
+                className="inline-flex text-current"
               >
                 <Github size={18} />
               </a>
@@ -256,14 +244,9 @@ function AppSidebar() {
             <SidebarMenuButton asChild tooltip="Log out">
               <div
                 onClick={handleLogout}
-                style={{
-                  height: "33px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  cursor: "pointer",
-                }}
+                className="h-[33px] flex justify-between cursor-pointer"
               >
-                <LogOut color={OscarColors.Red} />
+                <LogOut className="text-oscar-red" />
                 <span>Log out</span>
               </div>
             </SidebarMenuButton>

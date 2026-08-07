@@ -8,7 +8,6 @@ import { Service, ServiceVisibility } from "../../models/service";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowDownToLine, ExternalLink, LoaderPinwheel, Pencil, RefreshCw, Terminal, Trash2, WrapText } from "lucide-react";
-import OscarColors from "@/styles";
 import { Link, useNavigate } from "react-router-dom";
 import GenericTable, { ColumnDef } from "@/components/Table";
 import { InvokePopover } from "../InvokePopover";
@@ -224,7 +223,7 @@ function ServicesList() {
     >
       {servicesAreLoading === true ?
         <div className="flex items-center justify-center h-screen">
-            <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         </div>
       :
         <>
@@ -376,7 +375,7 @@ function ServicesList() {
                     onClick={() => setServicesToDelete([item])}
                     tooltipLabel="Delete"
                   >
-                    <Trash2 color={OscarColors.Red} />
+                    <Trash2 className="text-oscar-red" />
                   </Button>
                 ),
               },

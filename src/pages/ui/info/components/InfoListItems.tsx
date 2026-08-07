@@ -23,40 +23,12 @@ function InfoListItems({
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "16px",
-        whiteSpace: "pre-wrap",
-        flexWrap: "wrap",
-      }}
-    >
-      <h2 style={{ fontSize: "13px", fontWeight: "500" }}>{label}</h2>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          columnGap: "16px",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "13px",
-            fontWeight: "500",
-            maxWidth: "30vw",
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-          }}
-        >
+    <div className="flex flex-row flex-wrap items-center justify-between gap-4 whitespace-pre-wrap p-4">
+      <h2 className="text-sm font-medium">{label}</h2>
+      <div className="flex flex-row items-center gap-4">
+        <div className="max-w-[30vw] whitespace-pre-wrap break-words text-sm font-medium">
           <Select>
-            <SelectTrigger style={{
-            background: 'transparent',
-            border: 'transparent',
-          }}>
+            <SelectTrigger className="border-transparent bg-transparent">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
@@ -71,10 +43,7 @@ function InfoListItems({
         {enableCopy && (
           <Copy
             size={16}
-            style={{
-              cursor: "pointer",
-              marginTop: "3px",
-            }}
+            className="mt-[3px] cursor-pointer"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

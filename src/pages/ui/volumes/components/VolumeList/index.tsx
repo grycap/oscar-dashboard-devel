@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { useVolumes } from "@/contexts/Volumes/VolumesContext";
-import { isUserOscar } from "@/lib/utils";
+import { isUserOscar, cn } from "@/lib/utils";
 import { ManagedVolume } from "@/pages/ui/services/models/service";
-import OscarColors from "@/styles";
 import { AlertCircle, ExternalLinkIcon, LoaderPinwheel, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -19,7 +18,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700 border-yellow-300",
   error: "bg-red-100 text-red-700 border-red-300",
   deleting: "bg-orange-100 text-orange-700 border-orange-300",
-  deleted: "bg-gray-100 text-gray-700 border-gray-300",
+  deleted: "bg-slate-100 text-slate-700 border-slate-300",
 };
 
 const creationModeColors: Record<string, string> = {
@@ -30,11 +29,11 @@ const creationModeColors: Record<string, string> = {
 function formatBadge(value: string, colors: Record<string, string>) {
   const normalized = value?.toLowerCase() || "unknown";
   const badgeColors =
-    colors[normalized] || "bg-gray-100 text-gray-700 border-gray-300";
+    colors[normalized] || "bg-slate-100 text-slate-700 border-slate-300";
 
   return (
     <span
-      className={`font-bold px-2 py-1 rounded-full text-xs border ${badgeColors}`}
+      className={cn("font-bold px-2 py-1 rounded-full text-xs border", badgeColors)}
     >
       {normalized.toUpperCase()}
     </span>
@@ -113,9 +112,8 @@ export default function VolumeList() {
       {volumesAreLoading ? (
         <div className="flex items-center justify-center h-screen">
           <LoaderPinwheel
-            className="animate-spin"
+            className="animate-spin text-oscar-green-3"
             size={60}
-            color={OscarColors.Green3}
           />
         </div>
       )
@@ -214,7 +212,7 @@ export default function VolumeList() {
                       setItemsToDelete([...itemsToDelete, volume]);
                     }}
                   >
-                    <Trash color={OscarColors.Red} />
+                    <Trash className="text-oscar-red" />
                   </Button>
                 );
               },

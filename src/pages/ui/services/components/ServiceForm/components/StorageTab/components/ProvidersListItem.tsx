@@ -2,7 +2,6 @@ import {
   MinioStorageProvider,
   StorageProvider,
 } from "@/pages/ui/services/models/service";
-import OscarColors, { OscarStyles } from "@/styles";
 import minioLogo from "@/assets/logos/minio.png";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
@@ -43,55 +42,19 @@ function ProvidersListItem({
 
   return (
     <div
-      style={{
-        flexGrow: 1,
-        maxWidth: "32.8%",
-        height: 72,
-        border: OscarStyles.border,
-        background: "white",
-        borderRadius: 8,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        gap: 16,
-        padding: 10,
-        paddingLeft: 14,
-      }}
+      className="flex flex-grow flex-row items-center justify-start gap-4 max-w-[32.8%] h-[72px] rounded-lg border border-border bg-white py-2.5 pl-3.5 pr-2.5"
     >
       <img
         src={getImage()}
         alt="Provider logo"
-        style={{
-          width: "30%",
-        }}
+        className="w-[30%]"
       />
 
-      <div
-        style={{
-          flexGrow: 1,
-          flexBasis: 0,
-          overflow: "hidden",
-        }}
-      >
-        <h1
-          style={{
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-          }}
-        >
+      <div className="flex-grow basis-0 overflow-hidden">
+        <h1 className="overflow-hidden whitespace-nowrap text-ellipsis">
           {provider.id}
         </h1>
-        <h2
-          style={{
-            color: OscarColors.DarkGrayText,
-            maxWidth: "100%",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-          }}
-        >
+        <h2 className="max-w-full overflow-hidden whitespace-nowrap text-ellipsis text-muted-foreground">
           {getSubtitle()}
         </h2>
       </div>
@@ -123,7 +86,7 @@ function ProvidersListItem({
             onDelete(provider.id);
           }}
         >
-          <Trash2 color={OscarColors.Red} />
+          <Trash2 className="text-oscar-red" />
         </Button>
       </div>
     </div>

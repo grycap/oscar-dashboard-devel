@@ -1,7 +1,7 @@
 import UserInfo from "@/components/UserInfo";
-import OscarColors, { OscarStyles } from "@/styles";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import AnimatedRefreshCw from "../ui/animatedRefreshCw";
 
 interface GenericTopbarProps {
@@ -21,18 +21,14 @@ function GenericTopbar({ customHeader, defaultHeader, refresher, children, secon
   }, []);
   
   return (
-    <div className={`${secondaryRow ? "grid grid-rows-[auto_auto]" : "grid grid-rows-[auto]"} items-center w-full`}>
-      <div className="grid grid-cols-[auto_1fr_auto] w-full h-[69px] items-center gap-4 pl-4" style={{borderBottom: OscarStyles.border}}>
+    <div className={cn("grid items-center w-full", secondaryRow ? "grid-rows-[auto_auto]" : "grid-rows-[auto]")}>
+      <div className="grid grid-cols-[auto_1fr_auto] w-full h-[69px] items-center gap-4 pl-4 border-b border-border">
         {customHeader ?? (
         defaultHeader ? (
         <div className="flex flex-row items-center gap-2">
           <Link
             to={defaultHeader.linkTo}
-            style={{
-              color: OscarColors.DarkGrayText,
-              fontSize: 18,
-              textDecoration: "none",
-            }}
+            className="text-muted-foreground text-lg no-underline"
           >{defaultHeader.title}</Link>
           
           {defaultHeader && location.pathname === defaultHeader.linkTo && refresher && (
@@ -51,8 +47,7 @@ function GenericTopbar({ customHeader, defaultHeader, refresher, children, secon
         </div>
         
         <div 
-          style={{borderLeft: OscarStyles.border}}
-          className="flex flex-row items-center h-full min-w-max"
+          className="flex flex-row items-center h-full min-w-max border-l border-border"
         >
           <UserInfo />
         </div>

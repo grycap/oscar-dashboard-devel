@@ -149,7 +149,7 @@ export default function AddFileButton({ disabled = false, responsiveButton = "no
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed cursor-pointer border-gray-300 rounded-lg p-4 text-center flex flex-col items-center justify-center gap-2"
+          className="border-2 border-dashed cursor-pointer border-slate-300 rounded-lg p-4 text-center flex flex-col items-center justify-center gap-2"
         >
           <Upload className="h-8 w-8" />
           Drag and drop your files here or click to open file explorer
@@ -163,7 +163,7 @@ export default function AddFileButton({ disabled = false, responsiveButton = "no
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed cursor-pointer border-gray-300 rounded-lg text-center flex flex-col items-center justify-center"
+                className="border-2 border-dashed cursor-pointer border-slate-300 rounded-lg text-center flex flex-col items-center justify-center"
               >
                 {imagePreviewUrl && (
                   <img

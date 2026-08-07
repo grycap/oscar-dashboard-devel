@@ -89,9 +89,9 @@ type BreakdownChartCardProps = {
   hasData: boolean;
 };
 
-const SERVICE_BAR_COLORS = ["#009688", "#1F5FA6", "#D97706"];
+const SERVICE_BAR_COLORS = [OscarColors.Green4, OscarColors.Blue, "#D97706"];
 const RANKING_BAR_COLOR = "#0F766E";
-const COUNTRY_BAR_COLORS = ["#1F5FA6", "#009688", "#B8CEB8", "#D97706", "#0F172A"];
+const COUNTRY_BAR_COLORS = [OscarColors.Blue, OscarColors.Green4, OscarColors.Green1, "#D97706", "#0F172A"];
 
 function buildPresetRange(preset: Exclude<RangePreset, "custom">): QueryRange {
   const end = new Date();
@@ -537,7 +537,7 @@ function MetricsView() {
                     <Button
                       className={`h-10 w-10 rounded-xl border transition-all ${
                         showCustomRange
-                          ? "border-[#009688] bg-[#009688]/10 text-[#0f766e] hover:bg-[#009688]/15"
+                          ? "border-oscar-green-4 bg-oscar-green-4/10 text-[#0f766e] hover:bg-oscar-green-4/15"
                           : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                       }`}
                       size="icon"
@@ -984,7 +984,7 @@ function MetricsView() {
 
         {!metricsUnsupported && (overviewLoading || serviceLoading) && summary && (
           <div className="fixed bottom-6 right-6 z-20 flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-3 shadow-lg">
-            <LoaderPinwheel className="animate-spin" color={OscarColors.Green4} size={18} />
+            <LoaderPinwheel className="animate-spin text-oscar-green-4" size={18} />
             <span className="text-sm text-slate-700">Refreshing metrics</span>
           </div>
         )}

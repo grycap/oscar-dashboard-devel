@@ -26,7 +26,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import GenericTopbar from "@/components/Topbar";
-import OscarColors from "@/styles";
+import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import getStatusApi from "@/api/status/getStatusApi";
 import { ClusterStatus } from "@/models/clusterStatus";
@@ -121,18 +121,18 @@ const Cluster = () => {
             <div className="flex justify-center mb-4">
               <XCircle className="text-yellow-600" size={64} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+            <h2 className="text-2xl font-bold text-foreground mb-3">
               Version Not Supported
             </h2>
-            <p className="text-gray-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               The current OSCAR cluster version is not compatible with this dashboard.
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Please upgrade your OSCAR cluster to the latest version or contact your administrator for assistance.
             </p>
           </div>
         :
-        <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+        <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         }
       </div>
       :
@@ -141,7 +141,7 @@ const Cluster = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Cluster</CardTitle>
-            <CardDescription className="text-sm text-gray-500">
+            <CardDescription>
               Summary of the general status of the cluster.
             </CardDescription>
           </CardHeader>
@@ -149,20 +149,17 @@ const Cluster = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Number of nodes */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <p className="text-lg font-semibold">
                         Number of nodes:{" "}
                         <span className="text-xl font-bold">{clusterStatusData.cluster.nodes_count}</span>
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 {/* Total free CPU */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <Cpu className={getColorByPercentage(clusterStatusData.cluster.metrics.cpu.total_free_cores, cpuTotal, 30)} />
                       <p className="text-lg font-semibold">
@@ -172,12 +169,10 @@ const Cluster = () => {
                         </span>
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 {/* Max free CPU */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <Cpu className={getColorByPercentage(clusterStatusData.cluster.metrics.cpu.max_free_on_node_cores, cpuTotal, 30)} />
                       <p className="text-lg font-semibold">
@@ -187,12 +182,10 @@ const Cluster = () => {
                         </span>
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 {/* Total GPUs */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <p className="text-lg font-semibold">
                         Total GPUs:{" "}
@@ -204,12 +197,10 @@ const Cluster = () => {
                         <CheckCircle className="text-green-500" size={28} />
                       )}
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 {/* Total free memory */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <MemoryStick className={getColorByPercentage(clusterStatusData.cluster.metrics.memory.total_free_bytes, memTotal, 40)} />
                       <p className="text-lg font-semibold">
@@ -219,12 +210,10 @@ const Cluster = () => {
                         </span>
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 {/* Max free memory */}
-                <Card>
-                  <CardContent className="p-4">
+                <div className="rounded-lg border p-4 shadow-sm">
                     <div className="flex items-center gap-2 mt-2">
                       <MemoryStick className={getColorByPercentage(clusterStatusData.cluster.metrics.memory.max_free_on_node_bytes, memTotal, 40)} />
                       <p className="text-lg font-semibold">
@@ -234,71 +223,52 @@ const Cluster = () => {
                         </span>
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
             </div>
 
             {/* Deployment collapsible block */}
               <ExpandCard title="Deployment" className="w-full mt-6">
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="text-base font-medium text-gray-800 flex gap-1">
+                  <div className="rounded-lg border p-4 shadow-sm">
+                      <div className="text-base font-medium text-foreground flex gap-1">
                         Deployment name: <span>{clusterStatusData.oscar.deployment_name}</span>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
 
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="text-base font-medium text-gray-800 flex gap-1">
+                  <div className="rounded-lg border p-4 shadow-sm">
+                      <div className="text-base font-medium text-foreground flex gap-1">
                         Created on:{" "}
                         <span>
                           {new Date(clusterStatusData.oscar.deployment.creation_timestamp).toLocaleString()}
                         </span>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
 
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="text-base font-medium text-gray-800 flex gap-1">
+                  <div className="rounded-lg border p-4 shadow-sm">
+                      <div className="text-base font-medium text-foreground flex gap-1">
                         Strategy: <span>{clusterStatusData.oscar.deployment.strategy}</span>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
 
-                  <Card>
-                    <CardContent className="p-4">
-                      <div
-                        className={`text-base font-medium flex gap-1 ${
-                          clusterStatusData.oscar.deployment.ready_replicas === clusterStatusData.oscar.deployment.replicas
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
+                  <div className={cn("rounded-lg border p-4 shadow-sm text-base font-medium flex gap-1",
+                        clusterStatusData.oscar.deployment.ready_replicas === clusterStatusData.oscar.deployment.replicas
+                          ? "text-green-600"
+                          : "text-red-600"
+                      )}>
                         Available replicas:{" "}
                         <span>
                           {clusterStatusData.oscar.deployment.ready_replicas} / {clusterStatusData.oscar.deployment.replicas}
                         </span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  </div>
 
-                  <Card>
-                    <CardContent className="p-4">
-                      <div
-                        className={`text-base font-medium flex gap-1 ${
-                          clusterStatusData.oscar.deployment.replicas - clusterStatusData.oscar.deployment.available_replicas === 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
+                  <div className={cn("rounded-lg border p-4 shadow-sm text-base font-medium flex gap-1",
+                        clusterStatusData.oscar.deployment.replicas - clusterStatusData.oscar.deployment.available_replicas === 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      )}>
                         Not available:{" "}
                         <span>{clusterStatusData.oscar.deployment.replicas - clusterStatusData.oscar.deployment.available_replicas}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  </div>
                 </CardContent>
               </ExpandCard>
 
@@ -308,8 +278,7 @@ const Cluster = () => {
                 <CardContent className="grid grid-rows-[auto_1fr] gap-4 mt-5">
                   <div className="grid grid-cols-2 gap-4">
                     {/* Total pods */}
-                    <Card>
-                      <CardContent className="p-4 h-full">
+                    <div className="rounded-lg border p-4 shadow-sm h-full">
                         <div className="flex flex-row justify-center items-center gap-2 h-full">
                           <Box className="text-blue-600" size={24} />
                           <p className="text-lg font-semibold text-center">
@@ -317,12 +286,10 @@ const Cluster = () => {
                             <span className="text-xl font-bold">{clusterStatusData.oscar.pods.total}</span>
                           </p>
                         </div>
-                      </CardContent>
-                    </Card>
+                    </div>
 
                     {/* Total jobs */}
-                    <Card>
-                      <CardContent className="p-4 h-full">
+                    <div className="rounded-lg border p-4 shadow-sm h-full">
                         <div className="flex flex-row justify-center items-center gap-2 h-full">
                           <ClipboardList className="text-purple-600" size={24} />
                           <p className="text-lg font-semibold text-center">
@@ -330,8 +297,7 @@ const Cluster = () => {
                             <span className="text-xl font-bold ">{clusterStatusData.oscar.jobs_count}</span>
                           </p>
                         </div>
-                      </CardContent>
-                    </Card>
+                    </div>
                   </div>
 
                   <div className="flex flex-wrap md:flex-nowrap gap-4">
@@ -384,24 +350,19 @@ const Cluster = () => {
               <CardContent className="flex flex-col gap-4">
                 {/* First row: OIDC Enabled */}
                 <div className="flex mt-5">
-                  <Card className="w-full">
-                    <CardContent className="p-4">
-                      <div className={`text-base font-medium flex gap-1 ${
+                  <div className={cn("w-full rounded-lg border p-4 shadow-sm text-base font-medium flex gap-1",
                         clusterStatusData.oscar.oidc.enabled ? "text-green-600" : "text-red-600"
-                      }`}>
+                      )}>
                         OIDC enabled:{" "}
                         <span>{clusterStatusData.oscar.oidc.enabled ? "true" : "false"}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  </div>
                 </div>
 
                 {/* Second row: Issuer + Authorized groups */}
                 <div className="flex flex-col md:flex-row gap-4">
                   {/* Issuer */}
-                  <Card className="w-full md:w-1/2">
-                    <CardContent className="p-4">
-                      <div className="text-base font-medium text-gray-800">
+                  <div className="w-full md:w-1/2 rounded-lg border p-4 shadow-sm">
+                      <div className="text-base font-medium text-foreground">
                         Issuer:
                         <ul className="list-disc list-inside mt-1 text-sm font-normal">
                           {clusterStatusData.oscar.oidc.issuers.length > 0
@@ -411,13 +372,11 @@ const Cluster = () => {
                             : <li>N/A</li>}
                         </ul>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
 
                   {/* Authorized groups */}
-                  <Card className="w-full md:w-1/2">
-                    <CardContent className="p-4">
-                      <div className="text-base font-medium text-gray-800">
+                  <div className="w-full md:w-1/2 rounded-lg border p-4 shadow-sm">
+                      <div className="text-base font-medium text-foreground">
                         Authorized groups:
                         <ul className="list-disc list-inside mt-1 text-sm font-normal">
                           {clusterStatusData.oscar.oidc.groups.length > 0
@@ -427,8 +386,7 @@ const Cluster = () => {
                             : <li>N/A</li>}
                         </ul>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
                 </div>
               </CardContent>
             </ExpandCard>
@@ -441,7 +399,7 @@ const Cluster = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Nodes</CardTitle>
-            <CardDescription className="text-sm text-gray-500">
+            <CardDescription>
               Detailed information about the nodes. Currently  {clusterStatusData.cluster.nodes?.length ?? 0} active node(s).
             </CardDescription>
           </CardHeader>
@@ -557,7 +515,7 @@ const Cluster = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>MinIO</CardTitle>
-            <CardDescription className="text-sm text-gray-500">
+            <CardDescription>
               Detailed information about buckets.
             </CardDescription>
           </CardHeader>
@@ -565,8 +523,7 @@ const Cluster = () => {
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               {/* Total buckets */}
-              <Card>
-                <CardContent className="p-4 h-full">
+              <div className="rounded-lg border p-4 shadow-sm h-full">
                   <div className="flex flex-row justify-center items-center h-full gap-2">
                     <Database className="text-black" size={24} />
                     <p className="text-lg font-semibold text-center">
@@ -574,12 +531,10 @@ const Cluster = () => {
                       <span className="text-xl font-bold">{clusterStatusData.minio.buckets_count}</span>
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+              </div>
 
               {/* Total objects in minio */}
-              <Card>
-                <CardContent className="p-4 h-full">
+              <div className="rounded-lg border p-4 shadow-sm h-full">
                   <div className="flex flex-row justify-center items-center h-full gap-2">
                     <Files className="text-black" size={24} />
                     <p className="text-lg font-semibold text-center">
@@ -587,8 +542,7 @@ const Cluster = () => {
                       <span className="text-xl font-bold ">{clusterStatusData.minio.total_objects}</span>
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+              </div>
             </div>
           </CardContent>
         </Card>

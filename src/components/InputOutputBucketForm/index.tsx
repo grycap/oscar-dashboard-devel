@@ -3,6 +3,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { StoragePath } from "@/pages/ui/services/models/service";
+import { cn } from "@/lib/utils";
 
 const INPUT_STORAGE_PROVIDERS = ["minio.default"];
 const OUTPUT_STORAGE_PROVIDERS = ["minio.default"];
@@ -70,7 +71,7 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
 
   return (
     <div className="flex flex-col gap-4 pt-2">
-      <details className={`border rounded-xl bg-slate-50 ${errors.input_storage_provider || errors.input_path ? "border-red-500" : "border-slate-200"}`}>
+      <details className={cn("border rounded-xl bg-slate-50", (errors.input_storage_provider || errors.input_path) ? "border-red-500" : "border-slate-200")}>
         <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-700">
           Input
         </summary>
@@ -86,7 +87,7 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
               setErrors((prev) => ({ ...prev, input_storage_provider: !value.trim() }));
             }}
           >
-            <SelectTrigger className={errors.input_storage_provider ? "border-red-500 focus:border-red-500" : ""}>
+            <SelectTrigger className={cn(errors.input_storage_provider && "border-red-500 focus:border-red-500")}>
               <SelectValue placeholder="Select input provider" />
             </SelectTrigger>
             <SelectContent>
@@ -101,7 +102,6 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
           <Input
             type="text"
             value={inOutStorageConfig.input[0].path}
-            style={{ width: "100%", fontWeight: "normal" }}
             onChange={(e) => {
               const path = e.target.value;
               setInOutStorageConfig({
@@ -116,7 +116,7 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
         </div>
       </details>
 
-      <details className={`border rounded-xl bg-slate-50 ${errors.output_storage_provider || errors.output_path ? "border-red-500" : "border-slate-200"}`}>
+      <details className={cn("border rounded-xl bg-slate-50", (errors.output_storage_provider || errors.output_path) ? "border-red-500" : "border-slate-200")}>
         <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-700">
           Output
         </summary>
@@ -132,7 +132,7 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
               setErrors((prev) => ({ ...prev, output_storage_provider: !value.trim() }));
             }}
           >
-            <SelectTrigger className={errors.output_storage_provider ? "border-red-500 focus:border-red-500" : ""}>
+            <SelectTrigger className={cn(errors.output_storage_provider && "border-red-500 focus:border-red-500")}>
               <SelectValue placeholder="Select output provider" />
             </SelectTrigger>
             <SelectContent>
@@ -147,7 +147,6 @@ function InputOutputStorageForm({ ref }: { ref: React.Ref<InputOutputStorageForm
           <Input
             type="text"
             value={inOutStorageConfig.output[0].path}
-            style={{ width: "100%", fontWeight: "normal" }}
             onChange={(e) => {
               const path = e.target.value;
               setInOutStorageConfig({

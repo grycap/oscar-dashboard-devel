@@ -1,4 +1,3 @@
-import OscarColors from "@/styles";
 import { Link, useLocation } from "react-router-dom";
 
 function ServiceBreadcrumb() {
@@ -7,26 +6,15 @@ function ServiceBreadcrumb() {
   const [_, serviceId] = pathnames;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 9,
-      }}
-    >
+    <div className="flex flex-row items-center gap-2">
       {serviceId === "create" && (
         <>
-          <span style={{ color: OscarColors.DarkGrayText, fontSize: 18 }}>
+          <span className="text-muted-foreground text-lg">
             {` > `}
           </span>
           <Link
             to="/ui/services/create"
-            style={{
-              color: "black",
-              fontSize: 18,
-              textDecoration: "none",
-            }}
+            className="text-black text-lg no-underline"
           >{`Creating service`}</Link>
         </>
       )}

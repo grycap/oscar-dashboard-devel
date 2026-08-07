@@ -8,7 +8,6 @@ import { LogWithName } from "..";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getLogApi } from "@/api/logs/getLog";
-import OscarColors from "@/styles";
 import { Editor } from "@monaco-editor/react";
 import { Loader } from "lucide-react";
 import { alert } from "@/lib/alert";
@@ -49,7 +48,7 @@ export default function LogDetailsPopover({
       <DialogContent style={{ width: "70vw" }}>
         <DialogHeader>
           <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>Log name: </span>
+            <span className="text-muted-foreground">Log name: </span>
             {log?.name}
           </DialogTitle>
         </DialogHeader>

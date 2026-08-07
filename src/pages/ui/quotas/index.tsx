@@ -11,7 +11,6 @@ import { useState } from "react";
 import EditPopover from "./components/EditPopover";
 import QuotaEmptyState from "./components/QuotaEmptyState";
 import QuotaSummary from "./components/QuotaSummary";
-import OscarColors from "@/styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 
 type LoadQuotaOptions = {
@@ -71,7 +70,7 @@ function Quotas() {
   };
 
   const topbarActions = adminMode ? (
-    <div className="grid w-full gap-2 px-3 py-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+    <div className="grid w-full gap-2 px-2 py-1 sm:grid-cols-[minmax(0,1fr)_auto]">
       <Input
         placeholder="User ID"
         value={searchQuery}
@@ -108,7 +107,7 @@ function Quotas() {
         </div>
       ) : loading || (!quota && !adminMode) ? (
         <div className="flex items-center justify-center h-full">
-          <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+          <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
         </div>
       ) : (
         <div className="w-full h-full mx-auto px-4 pt-6 pb-6 space-y-6">

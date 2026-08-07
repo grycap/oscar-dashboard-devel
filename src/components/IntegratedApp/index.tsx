@@ -2,7 +2,6 @@ import { Service } from "@/pages/ui/services/models/service";
 import GenericTable from "../Table";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Edit, LoaderPinwheel, MoreVertical, RefreshCcwIcon, Trash2 } from "lucide-react";
-import OscarColors from "@/styles";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -138,7 +137,7 @@ function IntegratedApp({
       </GenericTopbar>
       {isLoading === true ?
       <div className="flex items-center justify-center h-screen">
-        <LoaderPinwheel className="animate-spin" size={60} color={OscarColors.Green3} />
+        <LoaderPinwheel className="animate-spin text-oscar-green-3" size={60} />
       </div>
       :
       <>
@@ -211,7 +210,7 @@ function IntegratedApp({
                 onClick={() => setServicesToDelete([service])}
                 tooltipLabel="Delete"
               >
-                <Trash2 color={OscarColors.Red} />
+                <Trash2 className="text-oscar-red" />
               </Button>
             ),
           },

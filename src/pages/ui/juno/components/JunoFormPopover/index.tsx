@@ -11,7 +11,6 @@ import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, 
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Service } from "@/pages/ui/services/models/service";
-import OscarColors from "@/styles";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { IMAGE_TAGS } from "./images";
@@ -200,7 +199,7 @@ return (
       <DialogContent className="max-w-[600px] max-h-[90%] gap-4 flex flex-col">
         <DialogHeader>
         <DialogTitle>
-            <span style={{ color: OscarColors.DarkGrayText }}>
+            <span className="text-muted-foreground">
             {`Jupyter Notebook Instance Configuration`}
             </span>
         </DialogTitle>
@@ -329,14 +328,14 @@ return (
                         <h4 className="font-semibold leading-none pb-2">
                           {`Version: ${formData.imageTag}`}
                         </h4>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {imageTagsMap.get(formData.imageTag)?.description}
                         </p>
                         <InfoItem 
                             link={{
                             url: imageTagsMap.get(formData.imageTag)?.url,
                             enableRedirectIcon: true,
-                          }} value={"More Info"} label={""} displayLabel={false} padding="0px"/>
+                          }} value={"More Info"} label={""} displayLabel={false} className="p-0"/>
                       </>
                     }
                   />

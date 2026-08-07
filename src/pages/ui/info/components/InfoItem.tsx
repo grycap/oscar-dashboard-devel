@@ -1,4 +1,5 @@
 import { alert } from "@/lib/alert";
+import { cn } from "@/lib/utils";
 import { Copy, ExternalLink, Eye } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,8 +10,8 @@ interface Props {
   isPassword?: boolean;
   enableCopy?: boolean;
   displayLabel?: boolean;
-  link?: {url?: string, enableRedirectIcon: boolean;};
-  padding?: string;
+  link?: { url?: string, enableRedirectIcon: boolean };
+  className?: string;
 }
 
 function InfoItem({
@@ -19,8 +20,8 @@ function InfoItem({
   isPassword = false,
   enableCopy = false,
   displayLabel = true,
-  link = {enableRedirectIcon: false},
-  padding = "16px",
+  link = { enableRedirectIcon: false },
+  className,
 }: Props) {
   const [isRevealed, setIsRevealed] = useState(false);
 
@@ -35,40 +36,21 @@ function InfoItem({
   }
 
   return (
-    <div className="grid grid-cols-[1fr_auto] gap-4" 
-      style={{
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: padding,
-      }}
-    >
-      <h2 style={{ fontSize: "13px", fontWeight: "500" }}>
-        {displayLabel ? label : ''}
+    <div className={cn("grid grid-cols-[1fr_auto] items-center justify-between gap-4 p-4", className)}>
+      <h2 className="text-sm font-medium">
+        {displayLabel ? label : ""}
       </h2>
-      <div className={"flex flex-row break-words text-right"}
-        style={{
-          alignItems: "center",
-          columnGap: "16px",
-        }}
-      >
-        <div className="min-w-0 break-all text-right"
-          style={{
-            fontSize: "13px",
-            fontWeight: "500",
-          }}
-        >
-          {!link.url ? displayedValue :
-            <Link style={{ textDecoration: 'none' }} to={link.url} target="_blank">{displayedValue}</Link>
-          }
+      <div className="flex flex-row items-center gap-4 break-words text-right">
+        <div className="min-w-0 break-all text-right text-sm font-medium">
+          {!link.url ? displayedValue : (
+            <Link className="no-underline" to={link.url} target="_blank">{displayedValue}</Link>
+          )}
         </div>
 
         {isPassword && (
           <Eye
             size={16}
-            className="flex-shrink-0"
-            style={{
-              cursor: "pointer",
-            }}
+            className="flex-shrink-0 cursor-pointer"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -81,23 +63,16 @@ function InfoItem({
             to={link.url}
             target="_blank"
           >
-            <ExternalLink 
+            <ExternalLink
               size={16}
-              className="flex-shrink-0"
-              style={{
-                cursor: "pointer",
-              }}
+              className="flex-shrink-0 cursor-pointer"
             />
           </Link>
         )}
         {enableCopy && (
           <Copy
             size={16}
-            className="flex-shrink-0"
-            style={{
-              cursor: "pointer",
-              marginTop: !isPassword ? "3px" : undefined,
-            }}
+            className={cn("flex-shrink-0 cursor-pointer", !isPassword && "mt-[3px]")}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

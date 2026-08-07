@@ -9,21 +9,12 @@ export default function UserInfo() {
   const transition = { duration: 0.2, ease: "easeOut" };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        padding: "0 16px",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="relative flex items-center justify-center overflow-hidden px-4">
       <AnimatePresence mode="popLayout" initial={false}>
         {
           <motion.div
             key="text"
-            className="text-decoration-underline-hover"
+            className="text-decoration-underline-hover flex items-center justify-center cursor-pointer gap-2.5 overflow-hidden"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
@@ -31,27 +22,12 @@ export default function UserInfo() {
               scale: 1.02,
             }}
             transition={transition}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              gap: 10,
-              overflow: "hidden",
-            }}
             onClick={() => {
               navigator.clipboard.writeText(authContext.authData.endpoint);
               alert.success("Endpoint copied to clipboard");
             }}
           >
-            <span
-              style={{
-                textWrap: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <span className="truncate">
               <div className="grid grid-cols-1 xl:grid-cols-[auto_auto]">
                 <div className="truncate">
                   {`${authContext.authData.user} -\u00A0`}
