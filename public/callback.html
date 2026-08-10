@@ -41,7 +41,7 @@
             const endpointURL = new URL(endpoint);
             const originURL = new URL(currentOrigin);
             const isLoopbackHostname = (hostname) =>
-              hostname === 'localhost' || hostname.startsWith('localhost') || hostname === '127.0.0.1' || hostname === '[::1]' || hostname === '::1';
+              hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]' || hostname === '::1';
 
             const isLoopbackUpgrade =
               endpointURL.protocol === 'http:' &&
