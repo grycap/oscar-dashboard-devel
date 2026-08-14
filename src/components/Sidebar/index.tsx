@@ -224,8 +224,8 @@ function AppSidebar() {
                 href="https://oscar.grycap.net"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Blog"
-                title="Blog"
+                aria-label="OSCAR website"
+                title="OSCAR website"
                 style={{ color: "inherit", display: "inline-flex" }}
               >
                 <Globe size={18} />
