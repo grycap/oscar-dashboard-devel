@@ -221,7 +221,7 @@ function AppSidebar() {
           <SidebarMenuItem>
             <div className="flex justify-center gap-4 mb-2 min-w-o truncate">
               <a
-                href="https://oscar.grycap.net/blog"
+                href="https://oscar.grycap.net"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Blog"
