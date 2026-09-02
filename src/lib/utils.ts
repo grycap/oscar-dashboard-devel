@@ -196,8 +196,8 @@ export function getUserVOs(authData: AuthData): string[] {
       });
     });
   }
-  if ((authData.egiSession as any).realm_access?.roles) {
-    (authData.egiSession as any).realm_access.roles.forEach((role: string) => {
+  if (authData.egiSession?.realm_access?.roles) {
+    authData.egiSession.realm_access.roles.forEach((role: string) => {
       // "platform-access:vo.example.eu"
       const match = role.match(/^platform-access:(vo\..+?)$/);
       if (match && match[1]) {
