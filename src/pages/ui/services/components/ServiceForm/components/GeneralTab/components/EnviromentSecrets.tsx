@@ -1,5 +1,7 @@
+import getServiceSecretApi from "@/api/services/getServiceSecretApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SecretInput } from "@/components/ui/secretInput";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Plus, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -22,6 +24,19 @@ function EnviromentSecrets() {
   }, [formService]);
 
   const [secretsArray, setSecretsArray] = useState(initialArray);
+
+
+  async function handleGetSecret(secretName: string): Promise<string> {
+    // Call the API to get the secret value
+    return await getServiceSecretApi(formService.name, secretName)
+      .then((secret) => {
+        return secret;
+      })
+      .catch((error) => {
+        console.error("Error fetching secret:", error);
+        return "";
+      });
+  }
 
   useEffect(() => {
     setFormService((prev) => ({
@@ -59,7 +74,7 @@ function EnviromentSecrets() {
             }}
             placeholder="Secret name"
           />
-          <Input
+          <SecretInput
             id={`secret-value-input-${index}`}
             type="password"
             value={variable.value}
@@ -72,6 +87,7 @@ function EnviromentSecrets() {
               setSecretsArray(newVariablesArray);
             }}
             placeholder="Value"
+            getSecretHandler={() => handleGetSecret(variable.key)}
           />
           {secretsArray.length > 0 && (
             <Button
