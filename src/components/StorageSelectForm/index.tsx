@@ -107,9 +107,15 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
     if (manageBucket && !manageVolume) {
       setStorageConfig({ ...storageConfig, mainStorage: "bucket" });
       setAddBucket(true);
+      if (addVolume) {
+        setAddVolume(false);
+      }
     } else if (!manageBucket && manageVolume) {
       setStorageConfig({ ...storageConfig, mainStorage: "volume" });
       setAddVolume(true);
+      if (addBucket) {
+        setAddBucket(false);
+      }
     }
   }, [manageBucket, manageVolume]);
 
