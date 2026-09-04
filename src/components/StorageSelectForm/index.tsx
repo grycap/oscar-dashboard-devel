@@ -81,13 +81,13 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
   useImperativeHandle(ref, () => {
     return {
       validate() {
-        const storageProviderValid = (storageConfig.bucketStorageProvider?.provider !== "minio.default" && storageProviderRef.current?.validate()) ?? false
+        const storageProviderValid = storageConfig.bucketStorageProvider?.provider !== "minio.default" ? (storageProviderRef.current?.validate()) ?? false : true;
         const nextErrors = {
           bucket: addBucket && !storageConfig.bucket.trim(),
           volume: addVolume && !storageConfig.volume.trim(),
           volumeSize: newVolume && (!storageConfig.volumeSize || parseInt(storageConfig.volumeSize) < 1),
         };
-        console.log("Validating StorageSelectForm", nextErrors, storageConfig);
+        console.log("Validating StorageSelectForm", nextErrors, storageConfig, storageProviderValid);
         setErrors(nextErrors);
         return storageProviderValid && !Object.values(nextErrors).some(Boolean);
       },
@@ -166,7 +166,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
               value={storageConfig.bucketStorageProvider.provider}
               onValueChange={(value) => {
                 const nextProvider = value as ProviderType;
-                setStorageConfig({ ...storageConfig, bucketStorageProvider: { provider: nextProvider } });
+                setStorageConfig({ ...storageConfig, bucket: "", bucketStorageProvider: { provider: nextProvider } });
               }}
             >
               <SelectTrigger>
