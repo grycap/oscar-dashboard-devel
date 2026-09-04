@@ -1,16 +1,18 @@
-import { useEffect, useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import useGetPrivateBuckets from "@/hooks/useGetPrivateBuckets";
 import useGetVolumes from "@/hooks/useGetVolumes";
 import CustomSwitch from "../CustomSwitch";
+import WebdavProvider, {WebdavProviderFormRef } from "./components/WebDavProvider";
 
-interface StorageConfig {
+export interface StorageConfig {
   bucket: string;
   volume: string;
   volumeSize: string;
   mainStorage: "volume" | "bucket";
+  bucketStorageProvider: StorageProviderConfig;
 }
 
 interface StorageSelectFormProps {
@@ -24,14 +26,29 @@ export interface StorageSelectFormRef {
   getStorageConfig: () => StorageConfig;
 }
 
+type ProviderType = "minio.default" | "webdav";
+
+export type StorageProviderConfig = {
+  provider: ProviderType;
+};
+
+export interface StorageProviderFormRef {
+  validate: () => boolean;
+  getProviderConfig: () => StorageProviderConfig;
+}
+
 function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: StorageSelectFormProps) {
   const [storageConfig, setStorageConfig] = useState<StorageConfig>({
     bucket: "",
     volume: "",
     volumeSize: "1",
     mainStorage: !manageBucket && manageVolume ? "volume" : "bucket",
+    bucketStorageProvider: {
+      provider: "minio.default",
+    },
   });
 
+  const storageProviderRef = useRef<StorageProviderFormRef | null>(null);
   const [errors, setErrors] = useState<{ bucket?: boolean; volume?: boolean; volumeSize?: boolean }>({});
 
   const [newBucket, setNewBucket] = useState(true);
@@ -64,6 +81,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
   useImperativeHandle(ref, () => {
     return {
       validate() {
+        const storageProviderValid = (storageConfig.bucketStorageProvider?.provider !== "minio.default" && storageProviderRef.current?.validate()) ?? false
         const nextErrors = {
           bucket: addBucket && !storageConfig.bucket.trim(),
           volume: addVolume && !storageConfig.volume.trim(),
@@ -71,9 +89,15 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
         };
         console.log("Validating StorageSelectForm", nextErrors, storageConfig);
         setErrors(nextErrors);
-        return !Object.values(nextErrors).some(Boolean);
+        return storageProviderValid && !Object.values(nextErrors).some(Boolean);
       },
       getStorageConfig() {
+        if (storageConfig.bucketStorageProvider?.provider !== "minio.default" && storageProviderRef.current) {
+          return {
+            ...storageConfig,
+            bucketStorageProvider:storageProviderRef.current.getProviderConfig(),
+          };
+        }
         return storageConfig;
       },
     };
@@ -136,48 +160,96 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
         <hr className="mb-2"/>
         {addBucket && (
         <div>
-          <CustomSwitch title="New Bucket" checked={newBucket} onChange={() => { setNewBucket(!newBucket); setStorageConfig({ ...storageConfig, bucket: "" }); }} />
-          {newBucket? 
-          <Input
-            type="input"
-            onFocus={(e) => (e.target.type = "text")}
-            style={{ width: "100%",
-              fontWeight: "normal",
-              }}
-            onChange={(e) => {
-              setBucketValue(e.target?.value);
-              setErrors((prev: any) => ({ ...prev, bucket: !e.target.value }));
-            }}
-            placeholder="Enter new bucket name"
-            error={errors.bucket ? "Bucket is required" : undefined}
-          />
-          :
+          <div className="mb-2">
+            <Label>Storage Provider</Label>
             <Select
-              value={storageConfig.bucket}
+              value={storageConfig.bucketStorageProvider.provider}
               onValueChange={(value) => {
-                setBucketValue(value);
+                const nextProvider = value as ProviderType;
+                setStorageConfig({ ...storageConfig, bucketStorageProvider: { provider: nextProvider } });
               }}
             >
-              <SelectTrigger className={errors.bucket ? "border-red-500 focus:border-red-500" : ""}>
-                <SelectValue
-                  placeholder="Select a bucket"
-                />
+              <SelectTrigger>
+                <SelectValue placeholder="Select a provider" />
               </SelectTrigger>
               <SelectContent>
-                { buckets.length === 0 ? (
-                  <SelectItem value="" disabled>
-                    {bucketLoading ? "Loading..." : "No buckets available"}
-                  </SelectItem>
-                )
-                :
-                buckets.map((bucket) => (
-                  <SelectItem key={bucket.bucket_name} value={bucket.bucket_name}>
-                    {bucket.bucket_name}
-                  </SelectItem>
-                ))}
+                <SelectItem value="minio.default">minio.default</SelectItem>
+                <SelectItem value="webdav">webdav</SelectItem>
               </SelectContent>
             </Select>
-          }
+          </div>
+
+          {storageConfig.bucketStorageProvider?.provider === "webdav" && (
+            <div className="mb-2">
+              <WebdavProvider ref={storageProviderRef as React.RefObject<WebdavProviderFormRef>} hostname="" login="" password="" />             
+            </div>
+          )}
+
+          {storageConfig.bucketStorageProvider?.provider === "minio.default" && (
+            <>
+              <CustomSwitch title="New Bucket" checked={newBucket} onChange={() => { setNewBucket(!newBucket); setStorageConfig({ ...storageConfig, bucket: "" }); }} />
+              {newBucket? 
+              <Input
+                type="input"
+                onFocus={(e) => (e.target.type = "text")}
+                style={{ width: "100%",
+                  fontWeight: "normal",
+                  }}
+                onChange={(e) => {
+                  setBucketValue(e.target?.value);
+                  setErrors((prev: any) => ({ ...prev, bucket: !e.target.value }));
+                }}
+                placeholder="Enter new bucket name"
+                error={errors.bucket ? "Bucket is required" : undefined}
+              />
+              :
+                <Select
+                  value={storageConfig.bucket}
+                  onValueChange={(value) => {
+                    setBucketValue(value);
+                  }}
+                >
+                  <SelectTrigger className={errors.bucket ? "border-red-500 focus:border-red-500" : ""}>
+                    <SelectValue
+                      placeholder="Select a bucket"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    { buckets.length === 0 ? (
+                      <SelectItem value="" disabled>
+                        {bucketLoading ? "Loading..." : "No buckets available"}
+                      </SelectItem>
+                    )
+                    :
+                    buckets.map((bucket) => (
+                      <SelectItem key={bucket.bucket_name} value={bucket.bucket_name}>
+                        {bucket.bucket_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              }
+            </>
+          )}
+          {storageConfig.bucketStorageProvider?.provider != "minio.default" && (
+            <>
+              <Label> Bucket Name </Label>
+              <Input
+                type="input"
+                onFocus={(e) => (e.target.type = "text")}
+                style={{ width: "100%",
+                  fontWeight: "normal",
+                  }}
+                onChange={(e) => {
+                  setBucketValue(e.target?.value);
+                  setErrors((prev: any) => ({ ...prev, bucket: !e.target.value }));
+                }}
+                placeholder="Enter bucket name"
+                error={errors.bucket ? "Bucket name is required" : undefined}
+              />
+            </>
+          )}
+          
         </div>
         )}
       </div>

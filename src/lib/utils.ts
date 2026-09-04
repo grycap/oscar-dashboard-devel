@@ -1,10 +1,13 @@
 import getBucketItemsApi from "@/api/buckets/getBucketItemsApi";
+import { StorageConfig, StorageProviderFormRef } from "@/components/StorageSelectForm";
+import { WebdavProviderConfig } from "@/components/StorageSelectForm/components/WebDavProvider";
 import { AuthData } from "@/contexts/AuthContext";
 import { SystemConfig } from "@/models/systemConfig";
-import { Service } from "@/pages/ui/services/models/service";
+import { Service, StorageProviders } from "@/pages/ui/services/models/service";
 import { _Object, CommonPrefix } from "@aws-sdk/client-s3";
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx"
+import { MutableRefObject } from "react";
 import { twMerge } from "tailwind-merge"
 import { stringify } from "yaml";
 
@@ -557,4 +560,33 @@ export function downloadString(data: string, filename: string, type: string = "t
 
 export function textToLF(text: string): string {
   return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function buildStorageProviderName(provider: string): string {
+  switch (provider) {
+    case "minio.default":
+      return "minio.default";
+    case "webdav":
+      return `webdav.${provider}`;
+    default:
+      return "minio.default";
+  }
+}
+
+export function validateStorageConfig(storageProvider: MutableRefObject<StorageProviderFormRef|null>): boolean {
+  const storageConfig = storageProvider.current;
+  if (!storageConfig) {
+    return false;
+  }
+  return storageConfig.validate();  
+}
+
+export function getStorageProvider(storageConfig: StorageConfig): {name: string, provider: StorageProviders} | undefined {
+  const provider = storageConfig.bucketStorageProvider.provider;
+  switch (provider) {
+    case "webdav":
+      return {name: buildStorageProviderName(provider), provider: {webdav: {webdav: (storageConfig.bucketStorageProvider as WebdavProviderConfig).connection}}};
+    default:
+      return undefined;
+  }
 }
