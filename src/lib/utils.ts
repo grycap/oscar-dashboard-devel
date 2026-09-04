@@ -581,9 +581,11 @@ export function validateStorageConfig(storageProvider: MutableRefObject<StorageP
   return storageConfig.validate();  
 }
 
-export function getStorageProvider(storageConfig: StorageConfig): {name: string, provider: StorageProviders} | undefined {
+export function getStorageProvider(storageConfig: StorageConfig): {name: string, provider?: StorageProviders} | undefined {
   const provider = storageConfig.bucketStorageProvider.provider;
   switch (provider) {
+    case "minio.default":
+      return {name: buildStorageProviderName(provider)};
     case "webdav":
       return {name: buildStorageProviderName(provider), provider: {webdav: {webdav: (storageConfig.bucketStorageProvider as WebdavProviderConfig).connection}}};
     default:
