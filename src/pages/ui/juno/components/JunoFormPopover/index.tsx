@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { alert } from "@/lib/alert";
-import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
+import { convertDockerImageToMap, fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, getStorageProvider, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import yamlToServices from "@/pages/ui/services/components/FDL/utils/yamlToService";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Service } from "@/pages/ui/services/models/service";
@@ -97,7 +97,11 @@ function JunoFormPopover() {
       return;
     }
     const storageConfig = storageFormRef.current!.getStorageConfig();
-
+    const storageProvider = getStorageProvider(storageConfig);
+    if (!storageProvider) {
+      alert.error("Invalid storage provider configuration");
+      return;
+    }
     try {
       const fdlUrl =
         "https://raw.githubusercontent.com/grycap/oscar-juno/refs/heads/main/juno.yaml";
@@ -157,7 +161,7 @@ function JunoFormPopover() {
           mount: {
             ...service.mount,
             path: storageConfig.bucket ?? "/notebook",
-            storage_provider: service.mount?.storage_provider ?? "minio.default",
+            storage_provider: storageProvider.name
           },
         } : {}),
         volume: undefined,
@@ -168,6 +172,9 @@ function JunoFormPopover() {
             mount_path: `/mnt/volumes/${storageConfig.volume}`,
           }
         } : {}),
+        storage_providers: {
+          ...storageProvider.provider,
+        },
       };
       await createServiceApi(modifiedService);
       refreshServices();
