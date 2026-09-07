@@ -18,6 +18,8 @@ export interface WebdavProviderFormRef extends StorageProviderFormRef {
   getProviderConfig: () => WebdavProviderConfig;
 }
 
+const normalizeHostname = (value: string) => value.trim().replace(/^https?:\/\//i, "").replace(/\/+$/, "");
+
 function WebdavProvider({ hostname = "", login = "", password = "", ref }: WebdavProviderProps) {
   const [config, setConfig] = useState<WebdavProviderConfig>({
     provider: "webdav",
@@ -71,10 +73,10 @@ function WebdavProvider({ hostname = "", login = "", password = "", ref }: Webda
           <Label>Hostname</Label>
           <Input
             type="text"
-            value={config.connection.hostname}
+            value={normalizeHostname(config.connection.hostname)}
             placeholder="Enter hostname"
             className={errors.hostname ? "border-red-500 focus:border-red-500" : ""}
-            onChange={(event) => updateConfig("hostname", event.target.value)}
+            onChange={(event) => updateConfig("hostname", normalizeHostname(event.target.value))}
             error={errors.hostname ? "Hostname is required" : undefined}
           />
         </div>
