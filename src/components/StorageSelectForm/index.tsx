@@ -7,6 +7,7 @@ import useGetVolumes from "@/hooks/useGetVolumes";
 import CustomSwitch from "../CustomSwitch";
 import WebdavProvider, {WebdavProviderFormRef } from "./components/WebDavProvider";
 import AWSProvider, { AWSProviderFormRef } from "./components/AWSProvider";
+import MinIOProvider, { MinIOProviderFormRef } from "./components/MinIOProvider";
 
 export interface StorageConfig {
   bucket: string;
@@ -27,7 +28,7 @@ export interface StorageSelectFormRef {
   getStorageConfig: () => StorageConfig;
 }
 
-type ProviderType = "minio.default" | "webdav" | "s3";
+type ProviderType = "minio.default" | "webdav" | "s3" | "minio";
 
 export type StorageProviderConfig = {
   provider: ProviderType;
@@ -165,6 +166,12 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
             <AWSProvider ref={storageProviderRef as React.RefObject<AWSProviderFormRef>} region="" access_key="" secret_key="" />             
           </div>
         );
+      case "minio":
+        return (
+          <div className="mb-2">
+            <MinIOProvider ref={storageProviderRef as React.RefObject<MinIOProviderFormRef>} endpoint="" access_key="" secret_key="" region="" verify={true} />
+          </div>
+        );
       default:
         return null;
     }
@@ -200,9 +207,10 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
                 <SelectValue placeholder="Select a provider" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="minio.default">minio.default</SelectItem>
-                <SelectItem value="webdav">webdav</SelectItem>
-                <SelectItem value="s3">s3</SelectItem>
+                <SelectItem value="minio.default">MinIO Default</SelectItem>
+                <SelectItem value="minio">MinIO External</SelectItem>
+                <SelectItem value="webdav">WebDAV</SelectItem>
+                <SelectItem value="s3">AWS S3</SelectItem>
               </SelectContent>
             </Select>
           </div>

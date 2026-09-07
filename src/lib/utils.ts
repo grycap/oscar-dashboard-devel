@@ -1,6 +1,7 @@
 import getBucketItemsApi from "@/api/buckets/getBucketItemsApi";
 import { StorageConfig, StorageProviderFormRef } from "@/components/StorageSelectForm";
 import { AWSProviderConfig } from "@/components/StorageSelectForm/components/AWSProvider";
+import { MinIOProviderConfig } from "@/components/StorageSelectForm/components/MinIOProvider";
 import { WebdavProviderConfig } from "@/components/StorageSelectForm/components/WebDavProvider";
 import { AuthData } from "@/contexts/AuthContext";
 import { SystemConfig } from "@/models/systemConfig";
@@ -571,6 +572,8 @@ function buildStorageProviderName(provider: string): string {
       return `webdav.${provider}`;
     case "s3":
       return `s3.${provider}`;
+    case "minio":
+      return `minio.${provider}`;
     default:
       return "minio.default";
   }
@@ -593,6 +596,8 @@ export function getStorageProvider(storageConfig: StorageConfig): {name: string,
       return {name: buildStorageProviderName(provider), provider: {webdav: {webdav: (storageConfig.bucketStorageProvider as WebdavProviderConfig).connection}}};
     case "s3":
       return {name: buildStorageProviderName(provider), provider: {s3: {s3: (storageConfig.bucketStorageProvider as AWSProviderConfig).connection}}};
+    case "minio":
+      return {name: buildStorageProviderName(provider), provider: {minio: {minio: (storageConfig.bucketStorageProvider as MinIOProviderConfig).connection}}};
     default:
       return undefined;
   }
