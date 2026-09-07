@@ -6,6 +6,7 @@ import useGetPrivateBuckets from "@/hooks/useGetPrivateBuckets";
 import useGetVolumes from "@/hooks/useGetVolumes";
 import CustomSwitch from "../CustomSwitch";
 import WebdavProvider, {WebdavProviderFormRef } from "./components/WebDavProvider";
+import AWSProvider, { AWSProviderFormRef } from "./components/AWSProvider";
 
 export interface StorageConfig {
   bucket: string;
@@ -26,7 +27,7 @@ export interface StorageSelectFormRef {
   getStorageConfig: () => StorageConfig;
 }
 
-type ProviderType = "minio.default" | "webdav";
+type ProviderType = "minio.default" | "webdav" | "s3";
 
 export type StorageProviderConfig = {
   provider: ProviderType;
@@ -150,6 +151,26 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
     }
   }, [newVolume]);
 
+  function returnStorageProviderComponent() {
+    switch (storageConfig.bucketStorageProvider?.provider) {
+      case "webdav":
+        return (
+          <div className="mb-2">
+            <WebdavProvider ref={storageProviderRef as React.RefObject<WebdavProviderFormRef>} hostname="" login="" password="" />             
+          </div>
+        );
+      case "s3":
+        return (
+          <div className="mb-2">
+            <AWSProvider ref={storageProviderRef as React.RefObject<AWSProviderFormRef>} region="" access_key="" secret_key="" />             
+          </div>
+        );
+      default:
+        return null;
+    }
+  }
+
+
   return (
     <div className="flex flex-col gap-2 pt-2">
       {manageBucket && (
@@ -181,17 +202,14 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
               <SelectContent>
                 <SelectItem value="minio.default">minio.default</SelectItem>
                 <SelectItem value="webdav">webdav</SelectItem>
+                <SelectItem value="s3">s3</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {storageConfig.bucketStorageProvider?.provider === "webdav" && (
-            <div className="mb-2">
-              <WebdavProvider ref={storageProviderRef as React.RefObject<WebdavProviderFormRef>} hostname="" login="" password="" />             
-            </div>
-          )}
+          {returnStorageProviderComponent()}
 
-          {storageConfig.bucketStorageProvider?.provider === "minio.default" && (
+          {storageConfig.bucketStorageProvider?.provider === "minio.default" ? (
             <>
               <CustomSwitch title="New Bucket" checked={newBucket} onChange={() => { setNewBucket(!newBucket); setStorageConfig({ ...storageConfig, bucket: "" }); }} />
               {newBucket? 
@@ -236,8 +254,7 @@ function StorageSelectForm({ manageBucket = true, manageVolume = true, ref }: St
                 </Select>
               }
             </>
-          )}
-          {storageConfig.bucketStorageProvider?.provider != "minio.default" && (
+          ) : (
             <>
               <Label> Bucket Name </Label>
               <Input
