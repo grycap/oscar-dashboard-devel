@@ -13,7 +13,7 @@ import createServiceApi from "@/api/services/createServiceApi";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import { Plus, RefreshCcwIcon } from "lucide-react";
 import RequestButton from "@/components/RequestButton";
-import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
+import { fetchFromGitHubOptions, generateReadableName, genRandomString, getAllowedVOs, getStorageProvider, useArrayPorts, usesDNSRoutes } from "@/lib/utils";
 import { errorMessage } from "@/lib/error";
 import StorageSelectForm, { StorageSelectFormRef } from "@/components/StorageSelectForm";
 
@@ -95,7 +95,11 @@ function FlowsFormPopover() {
       return;
     }
     const storageConfig = storageFormRef.current!.getStorageConfig();
-
+    const storageProvider = getStorageProvider(storageConfig);
+    if (!storageProvider) {
+      alert.error("Invalid storage provider configuration");
+      return;
+    }
     try {
       const fdlUrl = "https://raw.githubusercontent.com/grycap/oscar-flows/refs/heads/main/flows.yaml";
       const fdlResponse = await fetch(fdlUrl, fetchFromGitHubOptions);
@@ -148,7 +152,7 @@ function FlowsFormPopover() {
           mount: {
             ...service.mount,
             path: storageConfig.bucket ?? "/flows",
-            storage_provider: service.mount?.storage_provider ?? "minio.default",
+            storage_provider: storageProvider.name
           },
         } : {}),
         volume: undefined,
@@ -159,6 +163,9 @@ function FlowsFormPopover() {
             mount_path: `/mnt/volumes/${storageConfig.volume}`,
           }
         } : {}),
+        storage_providers: {
+          ...storageProvider.provider,
+        },
       };
       
       await createServiceApi(modifiedService);

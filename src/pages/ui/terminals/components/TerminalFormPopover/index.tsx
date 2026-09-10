@@ -28,6 +28,7 @@ import {
   generateReadableName,
   genRandomString,
   getAllowedVOs,
+  getStorageProvider,
   useArrayPorts,
   usesDNSRoutes,
 } from "@/lib/utils";
@@ -126,8 +127,8 @@ function TerminalFormPopover() {
       return;
     }
 
-    const storageConfig = withStorage ? storageFormRef.current!.getStorageConfig() : { mainStorage: "none", bucket: "", volume: "", volumeSize: "" };
-
+    const storageConfig = withStorage ? storageFormRef.current!.getStorageConfig() : { mainStorage: "", bucket: "", volume: "", volumeSize: "" };
+    const storageProvider = withStorage ? getStorageProvider(storageFormRef.current!.getStorageConfig()) : null;
     try {
       const fdlResponse = await fetch(TERMINAL_FDL_URL, fetchFromGitHubOptions);
       const fdlText = await fdlResponse.text();
@@ -189,20 +190,25 @@ function TerminalFormPopover() {
           terminal: "true",
         },
         mount: undefined,
-        ...(storageConfig.bucket ? {
+        ...(storageConfig.bucket && storageProvider ? {
           mount: {
             ...service.mount,
             path: storageConfig.bucket ?? "/notebook",
-            storage_provider: service.mount?.storage_provider ?? "minio.default",
+            storage_provider: storageProvider.name
           },
         } : {}),
         volume: undefined,
-        ...(storageConfig.volume ? { 
+        ...(storageConfig.volume && storageProvider ? { 
           volume: {
             name: storageConfig.volume,
             size: storageConfig.volumeSize ? `${storageConfig.volumeSize.trim()}Gi` : undefined,
             mount_path: `/mnt/volumes/${storageConfig.volume}`,
           }
+        } : {}),
+        ...(storageProvider ? {
+          storage_providers: {
+            ...storageProvider.provider,
+          },
         } : {}),
       };
 
