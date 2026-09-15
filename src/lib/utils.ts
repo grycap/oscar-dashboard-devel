@@ -17,6 +17,45 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function githubRawToTreeUrl(rawUrl: string): string {
+  try {
+    const url = new URL(rawUrl);
+    if (url.hostname !== "raw.githubusercontent.com") {
+      return rawUrl;
+    }
+
+    const segments = url.pathname.split("/").filter(Boolean);
+    if (segments.length < 5) {
+      return rawUrl;
+    }
+
+    const [owner, repo, ...rest] = segments;
+    if (!owner || !repo) {
+      return rawUrl;
+    }
+
+    let branch: string | undefined;
+    let remainingSegments: string[];
+
+    if (rest[0] === "refs" && rest.length >= 3 && (rest[1] === "heads" || rest[1] === "tags")) {
+      branch = rest[2];
+      remainingSegments = rest.slice(3);
+    } else if (rest[0] && !rest[0].includes(".")) {
+      branch = rest[0];
+      remainingSegments = rest.slice(1);
+    } else {
+      return rawUrl;
+    }
+
+    const pathWithoutFile = remainingSegments.length > 0 ? remainingSegments.slice(0, -1) : [];
+    const repoPath = pathWithoutFile.length > 0 ? `/${pathWithoutFile.join("/")}` : "";
+
+    return new URL(`https://github.com/${owner}/${repo}/tree/${branch}${repoPath}`).toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
 export const DNS_EXPOSED_SERVICES_VERSION = "v4.2.0";
 
 export function usesDNSRoutes(systemConfig: SystemConfig | null | undefined): boolean {
