@@ -370,7 +370,7 @@ function AgentFormPopover() {
           <>
             <div>
               <Label>Input/Output Storage</Label>
-              <InputOutputStorageForm ref={inputOutputBucketFormRef} />
+              <InputOutputStorageForm ref={inputOutputBucketFormRef} inOutStorageName={formData.name} />
             </div>
           </>
           :
