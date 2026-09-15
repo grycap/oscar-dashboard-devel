@@ -35,7 +35,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
   const {systemConfig, authData } = useAuth();
   const { refreshServices } = useServicesContext();
   const [newBucket, setNewBucket] = useState(false);
-  const buckets = useGetPrivateBuckets(isOpen);
+  const buckets = service.mount ? useGetPrivateBuckets(isOpen) : [];
 
   const oidcGroups = getAllowedVOs(systemConfig, authData);
 	const asyncService = roCrateServiceDef.type.some(t => t.toLowerCase() === "asynchronous");
@@ -150,11 +150,11 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
 
   useEffect(() => {
     if (!isOpen) return;
-
+    const serviceName = nameService();
     const initialVolume = serviceVolume?.name || "";
     setFormData((prev) => ({
       ...prev, 
-      name: nameService(),
+      name: serviceName,
       cpuCores: roCrateServiceDef.cpuRequirements,
       memoryRam: roCrateServiceDef.memoryRequirements,
       memoryUnit: roCrateServiceDef.memoryUnits,
@@ -163,8 +163,8 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       kserveMemoryUnit: roCrateServiceDef.kserveMemoryUnits ?? "",
       kserveEnv: service.kserve?.env || {},
       kserveArgs: service.kserve?.args || [],
-      bucket: "",
-      volume: "",
+      bucket: serviceName,
+      volume: serviceName,
       volumeSize: parseVolumeSize(serviceVolume?.size),
       token: genRandomString(128),
       enviromentVars: service.environment?.variables || {},
