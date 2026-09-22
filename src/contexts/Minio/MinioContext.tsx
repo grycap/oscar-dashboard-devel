@@ -99,7 +99,11 @@ export type MinioProviderData = {
 };
 
 function isLocalhostDeployed(endpoint:string){
-  if (env.response_default_minio === endpoint || endpoint.includes("host.docker.internal")){
+  if (env.response_default_minio === endpoint
+     || endpoint.includes("host.docker.internal")
+     || endpoint.includes("minio.minio")
+     || endpoint.includes("rustfs-svc.rustfs")
+    ){
     return true
   }else return false
 }
