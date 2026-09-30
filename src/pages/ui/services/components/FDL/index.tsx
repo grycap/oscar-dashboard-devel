@@ -95,7 +95,7 @@ function FDLForm() {
     if (existingService && services.length === 1) {
       services[0].name = formService.name;
     }
-    var createMode = true;
+    let createMode = true;
     const promises = services.map(async (service) => {
       try{
         await getServiceApi(service.name);
