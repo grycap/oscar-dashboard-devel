@@ -84,7 +84,7 @@ const lineChartOptions: ChartOptions<'line'> = {
 
 
 function ClusterUseGraph() {
-  const [expandedSections, setExpandedSections] = useState(false);
+  const [expandedSections, setExpandedSections] = useState(true);
   const [logs, setLogs] = useState<Array<ClusterLog>>([]);
   const [loading, setLoading] = useState(false);
   const [loadingError, setLoadingError] = useState(false);
@@ -124,6 +124,7 @@ function ClusterUseGraph() {
 
   function loadLogs() {
     setLoading(true);
+    setLoadingError(false);
     getClusterServiceLogsApi().then((logs) => {
       setLogs(Array.isArray(logs) ? logs : []);
     }).catch(() => {
@@ -163,7 +164,7 @@ function ClusterUseGraph() {
   }
 
   return (
-    <ExpandCard title="Usage" className="w-full mt-6" setExpandedState={setExpandedSections}>
+    <ExpandCard title="Activity over time" className="w-full" setExpandedState={setExpandedSections} defaultExpanded>
       <CardContent className="grid grid-cols-1 gap-4 mt-5">
         <Card>
           <CardContent className="p-4 flex flex-col gap-4 overflow-x-auto">
