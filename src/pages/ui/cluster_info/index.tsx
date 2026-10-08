@@ -189,7 +189,7 @@ const Cluster = () => {
                             <br />
                             <span>{`Total Free to reserve: ${formatCores(clusterStatusData.cluster.metrics.cpu.total_schedulable_cores)}`}</span>
                             <br />
-                            <span>{`Max Free to reserve on one node: ${formatCores(clusterStatusData.cluster.metrics.cpu.total_schedulable_on_node_cores)}`}</span>
+                            <span><strong>{`Max Free to reserve on one node: ${formatCores(clusterStatusData.cluster.metrics.cpu.total_schedulable_on_node_cores)}`}</strong></span>
                           </span>}
                 icon={<Cpu size={18} />}
                 colorScheme="blue"
