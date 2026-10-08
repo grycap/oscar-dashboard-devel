@@ -209,10 +209,7 @@ const Cluster = () => {
                     <br />
                     <span>{`Total Free to reserve: ${formatBytes(clusterStatusData.cluster.metrics.memory.total_schedulable_bytes)}`}</span>
                     <br />
-                    <span>{`Max Free to reserve on one node: ${formatBytes(clusterStatusData.cluster.metrics.memory.max_schedulable_on_node_bytes)}`}</span>
-                    <br />
-                    <span>{`Total Free: ${formatBytes(clusterStatusData.cluster.metrics.memory.total_free_bytes)}`}</span>
-
+                    <span><strong>{`Max Free to reserve on one node: ${formatBytes(clusterStatusData.cluster.metrics.memory.max_schedulable_on_node_bytes)}`}</strong></span>
                   </span>
                 }
                 icon={<MemoryStick size={18} />}
