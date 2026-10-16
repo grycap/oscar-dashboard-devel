@@ -7,7 +7,7 @@ import DeleteDialog from "@/components/DeleteDialog";
 import { Service, ServiceVisibility } from "../../models/service";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowDownToLine, ExternalLink, LoaderPinwheel, Pencil, RefreshCw, Terminal, Trash2, WrapText } from "lucide-react";
+import { ArrowDownToLine, Cpu, ExternalLink, MemoryStick, LoaderPinwheel, Pencil, RefreshCw, Terminal, Trash2, WrapText } from "lucide-react";
 import OscarColors from "@/styles";
 import { Link, useNavigate } from "react-router-dom";
 import GenericTable, { ColumnDef } from "@/components/Table";
@@ -38,6 +38,39 @@ const visibilityBadgeColors = {
   [ServiceVisibility.restricted]: "bg-amber-100 text-amber-900 border-amber-200",
   [ServiceVisibility.public]: "bg-green-100 text-green-900 border-green-200",
 };
+
+function EmptyCell() {
+  return <span className="text-slate-400">—</span>;
+}
+
+function renderResourceCell(icon: React.ReactNode, serviceValue?: string, modelValue?: string) {
+  const values = [
+    serviceValue ? { label: "service", value: serviceValue } : null,
+    modelValue ? { label: "model", value: modelValue } : null,
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  if (values.length === 0) return <EmptyCell />;
+
+  return (
+    <div className="flex flex-col items-start gap-1">
+      {values.map(({ label, value }) => (
+        <span
+          key={label}
+          title={values.length > 1 ? `${label}: ${value}` : undefined}
+          className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs tabular-nums text-slate-700 whitespace-nowrap"
+        >
+          <span className="text-slate-400">{icon}</span>
+          {value}
+          {values.length > 1 && (
+            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+              {label}
+            </span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function DeploymentStatusCell({ initialDeployment, serviceName, onNavigate, onDeploymentChange, eagerLoad }: DeploymentStatusCellProps) {
   const [deployment, setDeployment] = useState<DeploymentStatus | undefined>(initialDeployment);
@@ -75,11 +108,11 @@ function DeploymentStatusCell({ initialDeployment, serviceName, onNavigate, onDe
     >
       {deployment && !loading ? (
         <div className="flex flex-row items-center gap-1 bg-gray-300 rounded-full pr-2">
-        <div className="flex items-center" onClick={() => {
-          onNavigate();
-        }}>
-          <DeploymentStatusBadge deployment={deployment} showTooltip className="cursor-pointer" />
-        </div>
+          <div className="flex items-center" onClick={() => {
+            onNavigate();
+          }}>
+            <DeploymentStatusBadge deployment={deployment} showTooltip className="cursor-pointer" />
+          </div>
           <RefreshCw className="h-3 w-3 text-gray-700 opacity-90 hover:text-gray-900 hover:opacity-100" />
         </div>
       ) : (
@@ -269,7 +302,7 @@ function ServicesList() {
                   return (
                     <Badge
                       variant="outline"
-                      className={visibilityBadgeColors[visibility]}
+                      className={`${visibilityBadgeColors[visibility]} text-[11px] font-semibold tracking-wide`}
                     >
                       {visibility.toUpperCase()}
                     </Badge>
@@ -278,13 +311,44 @@ function ServicesList() {
                 sortBy: "visibility",
               },
               { header: "Image", accessor: 
-                (row) => (
-                  <code title={row.image} className="flex text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2 truncate max-w-[250px]">
-                    {row.image}
-                  </code>
-                ), sortBy: "image" },
-              { header: "CPU", accessor: "cpu", sortBy: "cpu" },
-              { header: "Memory", accessor: "memory", sortBy: "memory" },
+                (row) => {
+                  const entries = [
+                    row.image ? { label: "service", value: row.image } : null,
+                    row.kserve?.storage_uri ? { label: "model", value: row.kserve.storage_uri } : null,
+                  ].filter(Boolean) as { label: string; value: string }[];
+
+                  if (entries.length === 0) return <EmptyCell />;
+
+                  return (
+                    <div className="flex flex-col items-start gap-1">
+                      {entries.map(({ label, value }) => (
+                        <div key={label} className="flex items-center gap-2 max-w-[200px]">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 w-12 shrink-0">
+                            {label}
+                          </span>
+                          <code
+                            title={value}
+                            className="text-xs bg-slate-50 text-slate-700 ring-1 ring-inset ring-slate-200 rounded-full font-mono py-0.5 px-2.5 truncate sm:max-w-[200px]"
+                          >
+                            {value}
+                          </code>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }, sortBy: "image" },
+              { header: "CPU", accessor: 
+                (row) => renderResourceCell(
+                  <Cpu className="h-3.5 w-3.5" />,
+                  row.cpu && row.image ? row.cpu : undefined,
+                  row.kserve?.cpu
+                ), sortBy: "cpu" },
+              { header: "Memory", accessor: 
+                (row) => renderResourceCell(
+                  <MemoryStick className="h-3.5 w-3.5" />,
+                  row.memory && row.image ? row.memory : undefined,
+                  row.kserve?.memory
+                ), sortBy: "memory" },
             ]}
             actions={[
               {
@@ -338,7 +402,7 @@ function ServicesList() {
               {
                 button: (item) => (
                   <>
-                  {item.expose.max_scale != 0 ?
+                  {item.expose.max_scale != 0 || item.kserve ?
                     <ServiceRedirectButton 
                       className="flex items-center justify-center ml-2 mr-2 "
                       service={item}

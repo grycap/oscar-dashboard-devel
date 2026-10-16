@@ -228,7 +228,7 @@ function ServiceRedirectButton({
   }
 
   async function handleRedirectClick() {
-    if (service.expose.set_auth && service.expose.auth_type === "forward") {
+    if ((service.expose.set_auth && service.expose.auth_type === "forward") || (service.kserve && service.kserve.set_auth)) {
       openForwardAuthenticatedService();
       return;
     }
