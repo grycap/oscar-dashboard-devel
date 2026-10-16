@@ -271,12 +271,12 @@ export interface KServe {
 
 export interface KServeInference {
   model_format: string;
-  runtime: string;
-  api_version: string;
+  runtime_image?: string;
+  api_version?: string;
 }
 
 export interface KServeLLMInference {
-  runtime_image: string;
+  runtime_image?: string;
 }
 
 export enum ServiceTab {

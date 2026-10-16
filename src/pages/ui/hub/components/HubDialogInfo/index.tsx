@@ -158,7 +158,7 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
               </h4>
               <div>
                 <code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
-                  {service?.kserve?.inference?.runtime ?? service?.kserve?.llm_inference?.runtime_image ?? 'Not specified'}
+                  {service?.kserve?.inference?.runtime_image ?? service?.kserve?.llm_inference?.runtime_image ?? 'Not specified'}
                 </code>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useServicesContext from "@/pages/ui/services/context/ServicesContext";
 import {
   LOG_LEVEL,
@@ -95,18 +96,20 @@ const serviceToDownload = getFDLAndScriptText(formService)
               />
             </div>
             <div className="col-span-1 lg:col-span-2">
-              <Input
-                id="docker-image-input"
-                flex={2}
-                value={formService?.image}
-                label="Docker image"
-                onChange={(e) => {
-                  handleChange(e, "image");
-                }}
-                error={errors.image}
-                onBlur={() => onBlur("image")}
-                required
-              />
+              {formService?.image && (
+                <Input
+                  id="docker-image-input"
+                  flex={2}
+                  value={formService?.image}
+                  label="Docker image"
+                  onChange={(e) => {
+                    handleChange(e, "image");
+                  }}
+                  error={errors.image}
+                  onBlur={() => onBlur("image")}
+                  required
+                />
+              )}
             </div>
           </div>
           
@@ -242,7 +245,7 @@ const serviceToDownload = getFDLAndScriptText(formService)
             >
               <div className="flex flex-row gap-2 items-center">
                 <strong>Exposed:</strong>
-                {formService.expose?.api_port ? (
+                {(formService.expose?.api_port || formService.kserve) ? (
                   <Link
                     to={getExposedServiceUrl(authData.endpoint, formService.name, "", systemConfig?.config)}
                     target="_blank"
@@ -284,7 +287,7 @@ const serviceToDownload = getFDLAndScriptText(formService)
         </div>
       </ServiceFormCell>
       <Divider />
-      <ServiceFormCell title="Service Resources">
+      {formService?.image && <ServiceFormCell title="Service Resources">
         <div className="grid grid-cols-1 gap-5 w-full max-w-6xl min-w-[720px]">
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full max-w-5xl min-w-[720px] ">
             <div className="grid grid-cols-[150px_150px_150px] gap-[10px] items-end">
@@ -337,6 +340,91 @@ const serviceToDownload = getFDLAndScriptText(formService)
           </div>
         </div>
       </ServiceFormCell>
+      }
+      {formService?.kserve && formMode === ServiceViewMode.Update && (
+        <div>
+          <Divider />
+          <ServiceFormCell title="Serving Model">
+            <Card className="w-full max-w-5xl overflow-hidden border-slate-200 shadow-sm dark:border-slate-800">
+              <CardHeader className="border-b border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-800 dark:bg-slate-900/50">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-base font-semibold">
+                      {formService.kserve.type === "llm_inference" ? "LLM Inference" : "Inference"}
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      Model configuration
+                    </CardDescription>
+                  </div>
+                  <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    Read only
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 gap-x-8 gap-y-5 p-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Model source URI</p>
+                  <p className="break-all rounded-md bg-slate-50 px-3 py-2 font-mono text-sm text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+                    {formService.kserve.storage_uri || "Not specified"}
+                  </p>
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Runtime image</p>
+                  <p className="break-all text-sm text-slate-900 dark:text-slate-100">
+                    {formService.kserve.type === "inference"
+                      ? formService.kserve.inference?.runtime_image || "Default"
+                      : formService.kserve.llm_inference?.runtime_image || "Default"}
+                  </p>
+                </div>
+                {formService.kserve.type === "inference" && (
+                  <>
+                    <div>
+                      <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Model format</p>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {formService.kserve.inference?.model_format || "Not specified"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">API version</p>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {formService.kserve.inference?.api_version || "Not specified"}
+                      </p>
+                    </div>
+                  </>
+                )}
+                <div>
+                  <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Replicas (min / max)</p>
+                  <p className="text-sm text-slate-900 dark:text-slate-100">
+                    {formService.kserve.min_scale ?? "—"} / {formService.kserve.max_scale ?? "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Resources</p>
+                  <p className="text-sm text-slate-900 dark:text-slate-100">
+                    CPU: {formService.kserve.cpu || "—"} · Memory: {formService.kserve.memory || "—"}
+                  </p>
+                </div>
+                {Boolean(formService.kserve.args?.length) && (
+                  <div className="sm:col-span-2">
+                    <p className="mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">Runtime arguments</p>
+                    <p className="break-words font-mono text-sm text-slate-900 dark:text-slate-100">
+                      {formService.kserve.args?.join(" ")}
+                    </p>
+                  </div>
+                )}
+                <div className="sm:col-span-2 flex flex-wrap gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    GPU: {formService.kserve.enable_gpu ? "Enabled" : "Disabled"}
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    Authentication: {formService.kserve.set_auth ? "Required" : "Not required"}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </ServiceFormCell>
+        </div>
+      )}
       <Divider />
       <ServiceFormCell title="FDL / Script">
         { (
@@ -369,6 +457,8 @@ const serviceToDownload = getFDLAndScriptText(formService)
         )}
       </ServiceFormCell>
       <Divider />
+      {formService?.image && 
+      <div>
       <ServiceFormCell title="Annotations">
         <Annotations />
       </ServiceFormCell>
@@ -385,6 +475,8 @@ const serviceToDownload = getFDLAndScriptText(formService)
       </div>
       <Divider />
       <InputOutputEditor />
+      </div>
+      }
     </div>
   );
 }
