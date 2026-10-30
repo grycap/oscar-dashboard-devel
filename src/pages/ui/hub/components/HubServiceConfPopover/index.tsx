@@ -43,7 +43,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
   const serviceVolume = service?.volume;
   const canCreateManagedVolume = !!serviceVolume;
 
-  const isKserveService = roCrateServiceDef.type.includes('kserve');
+  const isModelServingService = roCrateServiceDef.type.includes('model-serving');
 
 
   function parseVolumeSize(size?: string): string {
@@ -86,10 +86,6 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
     cpuCores: "1.0",
     memoryRam: "2",
     memoryUnit: "Gi",
-    kserveCpuCores: "1.0",
-    kserveMemoryRam: "2",
-    kserveMemoryUnit: "Gi",
-    kserveEnv: {} as Record<string, string>,
     kserveArgs: [] as string[],
     bucket: "",
     volume: "",
@@ -129,9 +125,6 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
     name: false,
     cpuCores: false,
     memoryRam: false,
-    kserveCpuCores: false,
-    kserveMemoryRam: false,
-    kserveMemoryUnit: false,
     bucket: false,
     volume: false,
     volumeSize: false,
@@ -158,11 +151,7 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       cpuCores: roCrateServiceDef.cpuRequirements,
       memoryRam: roCrateServiceDef.memoryRequirements,
       memoryUnit: roCrateServiceDef.memoryUnits,
-      kserveCpuCores: roCrateServiceDef.kserveCpuRequirements ?? "",
-      kserveMemoryRam: roCrateServiceDef.kserveMemoryRequirements ?? "",
-      kserveMemoryUnit: roCrateServiceDef.kserveMemoryUnits ?? "",
-      kserveEnv: service.kserve?.env || {},
-      kserveArgs: service.kserve?.args || [],
+      kserveArgs: service.model_serving?.inference?.args || service.model_serving?.llm_inference?.args || [],
       bucket: serviceName,
       volume: serviceName,
       volumeSize: parseVolumeSize(serviceVolume?.size),
@@ -178,9 +167,6 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       name: false,
       cpuCores: false,
       memoryRam: false,
-      kserveCpuCores: false,
-      kserveMemoryRam: false,
-      kserveMemoryUnit: false,
       bucket: false,
       volume: false,
       volumeSize: false,
@@ -240,9 +226,6 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
       name: !formData.name,
       cpuCores: !formData.cpuCores,
       memoryRam: !formData.memoryRam,
-      kserveCpuCores: isKserveService && !formData.kserveCpuCores,
-      kserveMemoryRam: isKserveService && !formData.kserveMemoryRam,
-      kserveMemoryUnit: isKserveService && !formData.kserveMemoryUnit,
       bucket: !formData.bucket && (asyncService || !!mountBucket),
       volume: !formData.volume && !!serviceVolume,
       volumeSize:
@@ -330,14 +313,16 @@ function HubServiceConfPopover({ roCrateServiceDef, service, isOpen = false, set
           ...service.expose,
           nodePort: formData.nodePort,
         },
-        kserve: isKserveService && service.kserve ? {
-          ...service.kserve,
-          cpu: formData.kserveCpuCores,
-          memory: `${formData.kserveMemoryRam}${formData.kserveMemoryUnit}`,
-          env: {
-            ...formData.kserveEnv,
-          },
-          args: formData.kserveArgs.length > 0 ? formData.kserveArgs : service.kserve?.args,
+        model_serving: isModelServingService && service.model_serving ? {
+          ...service.model_serving,
+          inference: service.model_serving.inference ? {
+            ...service.model_serving.inference,
+            args: formData.kserveArgs.length > 0 ? formData.kserveArgs : service.model_serving.inference?.args,
+          } : undefined,
+          llm_inference: service.model_serving.llm_inference ? {
+            ...service.model_serving.llm_inference,
+            args: formData.kserveArgs.length > 0 ? formData.kserveArgs : service.model_serving.llm_inference?.args,
+          } : undefined,
         } : undefined,
       };
       await createServiceApi(modifiedService);
@@ -396,7 +381,6 @@ return (
                 }}
               ></Input>
             </div>
-            {service?.image &&
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-end">
               <div>
                 <Label htmlFor="cpu-cores">CPU Cores</Label>
@@ -445,57 +429,6 @@ return (
                   </Select>
               </div>
             </div>
-            }
-            {isKserveService && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-end">
-              <div>
-                <Label htmlFor="kserve-cpu-cores">Kserve CPU Cores</Label>
-                <Input
-                  id="kserve-cpu-cores"
-                  type="number"
-                  step={0.1}
-                  placeholder="Enter CPU Cores"
-                  value={formData.kserveCpuCores}
-                  className={errors.kserveCpuCores ? "border-red-500 focus:border-red-500" : ""}
-                  onChange={(e) => {
-                    setFormData({ ...formData, kserveCpuCores: e.target.value });
-                    if (errors.kserveCpuCores) setErrors({ ...errors, kserveCpuCores: false });
-                  }}
-                ></Input>
-              </div>
-              <div className="grid grid-cols-[1fr_auto] gap-2 items-end">
-                  <div>
-                    <Label htmlFor="kserve-memory-ram">Kserve RAM</Label>
-                    <Input
-                      id="kserve-memory-ram"
-                      type="number"
-                      step={formData.kserveMemoryUnit === "Gi" ? 1 : 256}
-                      placeholder="Enter RAM"
-                      value={formData.kserveMemoryRam}
-                      className={errors.kserveMemoryRam ? "border-red-500 focus:border-red-500" : ""}
-                      onChange={(e) => {
-                        setFormData({ ...formData, kserveMemoryRam: e.target.value });
-                        if (errors.kserveMemoryRam) setErrors({ ...errors, kserveMemoryRam: false });
-                      }}
-                    />
-                  </div>
-                  <Select
-                    value={formData.kserveMemoryUnit}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, kserveMemoryUnit: value })
-                    }
-                  >
-                    <SelectTrigger className="w-[80px]">
-                      <SelectValue id="kserve-memory-unit" placeholder="Unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Gi">Gi</SelectItem>
-                      <SelectItem value="Mi">Mi</SelectItem>
-                    </SelectContent>
-                  </Select>
-              </div>
-            </div>
-            )}
             <div>
                 <Label htmlFor="vo">VO</Label>
                 <Select
@@ -769,36 +702,10 @@ return (
             </div>
             )}
             
-            {Object.keys(service.kserve?.env ?? {}).length > 0 && (
-            <div>
-              <Label>Kserve Environment Variables</Label>
-              <hr className="mb-2"/>
-              {Object.entries(service.kserve?.env ?? {}).map(([key, value]) => (
-              <div key={`kserve-var-${key}`}>
-                <Label>{key}</Label>
-                <Input
-                  type="text"
-                  value={formData.kserveEnv?.[key] ?? value}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      kserveEnv: {
-                        ...prev.kserveEnv,
-                        [key]: e.target.value,
-                      },
-                    }));
-                  }}
-                  placeholder={`Enter ${key}`}
-                />
-              </div>
-              ))}
-            </div>
-            )}
-            
-            {isKserveService && (
+            {isModelServingService && (
             <div>
               <div className="flex items-center justify-between gap-2">
-                <Label>Kserve Arguments</Label>
+                <Label>Model Serving Arguments</Label>
                 <Button
                   variant="lightGreen"
                   size="sm"

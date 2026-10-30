@@ -17,7 +17,7 @@ interface HubDialogInfoProps {
 
 function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isInfoOpen, setIsInfoOpen }: HubDialogInfoProps ) {
   
-  const isKserveService = roCrateServiceDef.type.includes('kserve');
+  const isModelServingService = roCrateServiceDef.type.includes('model-serving');
 
   const handleOpenSource = () => {
     if (roCrateServiceDef.fdlUrl) {
@@ -140,42 +140,41 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
               </div>
             </div>
             }
-            {isKserveService &&
+            {isModelServingService &&
             <>
             <div className="flex flex-col gap-1">
               <h4 className="text-xs text-gray-500 uppercase tracking-wide">
-                KServe Type
+                Model Serving Type
                 </h4>
               <div>
                 <code className="text-xs rounded-xl font-mono py-1 px-2 bg-blue-100 text-blue-700">
-                  {service?.kserve?.inference ? 'Inference' : service?.kserve?.llm_inference ? 'LLM Inference' : 'Not specified'}
+                  {service?.model_serving?.inference ? 'Inference' : service?.model_serving?.llm_inference ? 'LLM Inference' : 'Not specified'}
                 </code>
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <h4 className="text-xs text-gray-500 uppercase tracking-wide">
-                KServe Runtime Image
+                Model Runtime Image
               </h4>
               <div>
                 <code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
-                  {service?.kserve?.inference?.runtime ?? service?.kserve?.llm_inference?.runtime_image ?? 'Not specified'}
+                  {service?.model_serving?.inference?.runtime_image ?? service?.model_serving?.llm_inference?.runtime_image ?? 'Not specified'}
                 </code>
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <h4 className="text-xs text-gray-500 uppercase tracking-wide">
-                KServe Model Storage URI
+                Model Source URI
               </h4>
               <div>
                 <code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
-                  {service?.kserve?.storage_uri ?? 'Not specified'}
+                  {service?.model_serving?.inference?.source ?? service?.model_serving?.llm_inference?.source ?? 'Not specified'}
                 </code>
               </div>
             </div>
             </>
             }
           </div>
-          {(service?.image) &&
           <>
           <div className="mt-4">
             <h4 className="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-3">
@@ -232,65 +231,6 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
             </p>
           </div>
           </>
-          }
-          {isKserveService &&
-          <>
-          <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-3">
-              Kserve System Requirements
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    CPU
-                  </h5>
-                  <span className="text-xs text-gray-400">⚡</span>
-                </div>
-                <div className="text-sm text-gray-700 font-medium">
-                  {roCrateServiceDef.kserveCpuRequirements || 'Not specified'}
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    GPU
-                  </h5>
-                  <span className="text-xs text-gray-400">🖥️</span>
-                </div>
-                <div className="text-sm text-gray-700 font-medium">
-                  {(Number(roCrateServiceDef.kserveGpuRequirements) > 0 ? roCrateServiceDef.kserveGpuRequirements : 'Not required')}
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    RAM
-                  </h5>
-                  <span className="text-xs text-gray-400">💾</span>
-                </div>
-                <div className="text-sm text-gray-700 font-medium mb-2">
-                  {roCrateServiceDef.kserveMemoryRequirements && roCrateServiceDef.kserveMemoryUnits 
-                    ? `${roCrateServiceDef.kserveMemoryRequirements} ${roCrateServiceDef.kserveMemoryUnits}`
-                    : 'Not specified'
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 uppercase">
-              Description
-            </h4>
-            <p className="text-gray-600">
-              {roCrateServiceDef.description || 'Not specified'}
-            </p>
-          </div>
-          </>
-          }
           </div>
 
           <div className="flex mt-6">
