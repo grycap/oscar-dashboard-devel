@@ -129,7 +129,7 @@ async function parseROCrateDataJScore(githubUser, githubRepo, githubBranch, crat
     headers: {
       'Accept': 'text/plain, application/x-yaml, */*',
       // Can be required for private repositories or higher rate limits
-     'Authorization': `Bearer xxx`
+     //'Authorization': `Bearer xxx`
     }
   };
   
