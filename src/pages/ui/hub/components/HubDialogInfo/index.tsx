@@ -52,7 +52,7 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
           variant="ghost"
           size="sm"
           tooltipLabel="Service Info"
-          className="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-300 "
+          className="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-slate-800 dark:hover:border-slate-600 "
         >
           <Info size={16} />
         </Button>
@@ -101,23 +101,23 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
         <div className="mt-2 max-h-[80vh]">
           <div className="overflow-y-auto max-h-full">
           <div>
-            <h4 className="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-1">
+            <h4 className="font-semibold text-gray-800 dark:text-slate-100 text-sm uppercase tracking-wide mb-1">
               Service Details
             </h4>
           </div>
           <div className="flex flex-wrap font-medium gap-x-8 gap-y-2 items-start">
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 Author
               </h4>
               <div>
-                <span className="text-sm text-gray-700  py-1">
+                <span className="text-sm text-gray-700 dark:text-slate-300  py-1">
                   {roCrateServiceDef.author || 'Unknown'}
                 </span>
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 Type
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -130,11 +130,11 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
             </div>
             {service?.image &&
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 Docker Image
                 </h4>
               <div>
-                <code title={service?.image} className="flex text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2 truncate max-w-[250px]">
+                <code title={service?.image} className="flex text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-xl font-mono py-1 px-2 truncate max-w-[250px]">
                   {service?.image}
                 </code>
               </div>
@@ -143,31 +143,31 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
             {isKserveService &&
             <>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 KServe Type
                 </h4>
               <div>
-                <code className="text-xs rounded-xl font-mono py-1 px-2 bg-blue-100 text-blue-700">
+                <code className="text-xs rounded-xl font-mono py-1 px-2 bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
                   {service?.kserve?.inference ? 'Inference' : service?.kserve?.llm_inference ? 'LLM Inference' : 'Not specified'}
                 </code>
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 KServe Runtime Image
               </h4>
               <div>
-                <code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
+                <code className="text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-xl font-mono py-1 px-2">
                   {service?.kserve?.inference?.runtime ?? service?.kserve?.llm_inference?.runtime_image ?? 'Not specified'}
                 </code>
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs text-gray-500 uppercase tracking-wide">
+              <h4 className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 KServe Model Storage URI
               </h4>
               <div>
-                <code className="text-xs bg-gray-100 text-gray-700 rounded-xl font-mono py-1 px-2">
+                <code className="text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-xl font-mono py-1 px-2">
                   {service?.kserve?.storage_uri ?? 'Not specified'}
                 </code>
               </div>
@@ -178,42 +178,42 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
           {(service?.image) &&
           <>
           <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-3">
+            <h4 className="font-semibold text-gray-800 dark:text-slate-100 text-sm uppercase tracking-wide mb-3">
               System Requirements
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     CPU
                   </h5>
                   <span className="text-xs text-gray-400">⚡</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {roCrateServiceDef.cpuRequirements || 'Not specified'}
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     GPU
                   </h5>
                   <span className="text-xs text-gray-400">🖥️</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {(Number(roCrateServiceDef.gpuRequirements) > 0 ? roCrateServiceDef.gpuRequirements : 'Not required')}
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     RAM
                   </h5>
                   <span className="text-xs text-gray-400">💾</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium mb-2">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium mb-2">
                   {roCrateServiceDef.memoryRequirements && roCrateServiceDef.memoryUnits 
                     ? `${roCrateServiceDef.memoryRequirements} ${roCrateServiceDef.memoryUnits}`
                     : 'Not specified'
@@ -224,10 +224,10 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
           </div>
 
           <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 uppercase">
+            <h4 className="font-semibold text-gray-800 dark:text-slate-100 uppercase">
               Description
             </h4>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-slate-300">
               {roCrateServiceDef.description || 'Not specified'}
             </p>
           </div>
@@ -236,42 +236,42 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
           {isKserveService &&
           <>
           <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-3">
+            <h4 className="font-semibold text-gray-800 dark:text-slate-100 text-sm uppercase tracking-wide mb-3">
               Kserve System Requirements
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     CPU
                   </h5>
                   <span className="text-xs text-gray-400">⚡</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {roCrateServiceDef.kserveCpuRequirements || 'Not specified'}
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     GPU
                   </h5>
                   <span className="text-xs text-gray-400">🖥️</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {(Number(roCrateServiceDef.kserveGpuRequirements) > 0 ? roCrateServiceDef.kserveGpuRequirements : 'Not required')}
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 border border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     RAM
                   </h5>
                   <span className="text-xs text-gray-400">💾</span>
                 </div>
-                <div className="text-sm text-gray-700 font-medium mb-2">
+                <div className="text-sm text-gray-700 dark:text-slate-300 font-medium mb-2">
                   {roCrateServiceDef.kserveMemoryRequirements && roCrateServiceDef.kserveMemoryUnits 
                     ? `${roCrateServiceDef.kserveMemoryRequirements} ${roCrateServiceDef.kserveMemoryUnits}`
                     : 'Not specified'
@@ -282,10 +282,10 @@ function HubDialogInfo( { roCrateServiceDef, service, setIsDeployDialogOpen, isI
           </div>
 
           <div className="mt-4">
-            <h4 className="font-semibold text-gray-800 uppercase">
+            <h4 className="font-semibold text-gray-800 dark:text-slate-100 uppercase">
               Description
             </h4>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-slate-300">
               {roCrateServiceDef.description || 'Not specified'}
             </p>
           </div>

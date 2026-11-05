@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Editor } from "@monaco-editor/react";
+import Editor from "@/components/ThemedEditor";
 import { AlertCircle, Loader2, RefreshCcw, XCircle } from "lucide-react";
 import getDeploymentStatusApi from "@/api/deployment/getDeploymentStatusApi";
 import getDeploymentLogsApi from "@/api/deployment/getDeploymentLogsApi";
@@ -55,7 +55,7 @@ function Field({
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
         {label}
       </p>
-      <p className="text-sm text-slate-900">{value}</p>
+      <p className="text-sm text-slate-900 dark:text-slate-100">{value}</p>
     </div>
   );
 }
@@ -148,7 +148,7 @@ export default function ServiceDeployment() {
     <div className="flex flex-1 flex-col gap-4 overflow-auto p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-slate-950">
+          <h2 className="text-xl font-semibold text-slate-950 dark:text-slate-50">
             Deployment visibility
           </h2>
           <p className="text-sm text-slate-500">
@@ -286,7 +286,7 @@ export default function ServiceDeployment() {
               ) : (
                 <div className="relative flex-1 overflow-hidden rounded-lg border border-slate-200">
                   {isRefreshing && (
-                    <div className="absolute right-3 top-3 z-10 rounded-md bg-white/90 px-2 py-1 text-xs text-slate-500 shadow-sm">
+                    <div className="absolute right-3 top-3 z-10 rounded-md bg-white/90 dark:bg-slate-900/90 px-2 py-1 text-xs text-slate-500 shadow-sm">
                       <span className="inline-flex items-center gap-1">
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         Refreshing
