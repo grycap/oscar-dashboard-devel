@@ -11,7 +11,7 @@ export default function ThemeToggle({ compact = false }: { compact?: boolean }) 
 
   return compact ? (
     <button type="button" title={label} aria-label={label} onClick={toggle}
-      className="inline-flex items-center justify-center rounded-sm hover:text-sidebar-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar">
       <Icon size={18} />
     </button>
   ) : (

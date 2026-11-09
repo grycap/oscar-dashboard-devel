@@ -222,7 +222,7 @@ function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex justify-center items-center gap-4 mb-2 min-w-0">
+            <div className="flex justify-center items-center gap-4 mb-2 min-w-0 group-data-[collapsible=icon]:flex-wrap group-data-[collapsible=icon]:gap-2">
               <a
                 href="https://oscar.grycap.net"
                 target="_blank"
