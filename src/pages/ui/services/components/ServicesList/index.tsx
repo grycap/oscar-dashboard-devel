@@ -69,7 +69,7 @@ function DeploymentStatusCell({ initialDeployment, serviceName, onNavigate, onDe
       }}
     >
       {deployment && !loading ? (
-        <div className="flex flex-row items-center gap-1 bg-gray-300 rounded-full pr-2">
+        <div className="flex flex-row items-center gap-1 bg-gray-300 dark:bg-slate-700 rounded-full pr-2">
         <div className="flex items-center" onClick={() => {
           onNavigate();
         }}>
