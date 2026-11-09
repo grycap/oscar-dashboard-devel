@@ -385,19 +385,19 @@ export function shortenFullname(fullname: string): string {
 export function getHubServiceTypeTagColor(type: string) {
   switch (type.toLowerCase()) {
     case "asynchronous":
-      return "bg-green-100 text-green-700";
+      return "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300";
     case "synchronous":
-      return "bg-blue-100 text-blue-700";
+      return "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300";
     case "exposed":
-      return "bg-yellow-100 text-yellow-700";
+      return "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/50 dark:text-yellow-300";
     case "on-demand":
-      return "bg-purple-100 text-purple-700";
+      return "bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300";
     case "agent":
-      return "bg-pink-100 text-pink-700";
+      return "bg-pink-100 text-pink-700 dark:bg-pink-950/50 dark:text-pink-300";
     case "kserve":
-      return "bg-indigo-100 text-indigo-700";
+      return "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300";
     default:
-      return "bg-red-100 text-red-700";
+      return "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300";
   }
 }
 

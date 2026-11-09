@@ -127,19 +127,19 @@ function HubDialogInfo( { roCrateServiceDef, services, setIsDeployDialogOpen, is
             </div>
           </div>
           {services.length > 1 && (
-            <h4 className="mt-4 font-semibold text-gray-800 text-sm uppercase tracking-wide">
+            <h4 className="mt-4 font-semibold text-gray-800 dark:text-slate-100 text-sm uppercase tracking-wide">
               Services ({services.length})
             </h4>
           )}
           {services.map((service, index) => (
-            <div key={index} className={services.length > 1 ? "mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3" : "mt-2"}>
+            <div key={index} className={services.length > 1 ? "mt-2 rounded-lg border border-gray-200 bg-gray-50 dark:border-slate-700 dark:bg-slate-800 p-3" : "mt-2"}>
             {services.length > 1 && (
               <div className="mb-2">
-                <p className="text-xs text-gray-500 uppercase tracking-wide">
+                <p className="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                   Service {index + 1} of {services.length}
                 </p>
                 {service.name && (
-                  <h5 className="font-semibold text-gray-800 text-sm break-words">
+                  <h5 className="font-semibold text-gray-800 dark:text-slate-100 text-sm break-words">
                     {service.name}
                   </h5>
                 )}
@@ -206,7 +206,7 @@ function HubDialogInfo( { roCrateServiceDef, services, setIsDeployDialogOpen, is
                   <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     CPU
                   </h5>
-                  <span className="text-xs text-gray-400">⚡</span>
+                  <span className="text-xs text-gray-400 dark:text-slate-400">⚡</span>
                 </div>
                 <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {roCrateServiceDef.cpuRequirements || 'Not specified'}
@@ -218,7 +218,7 @@ function HubDialogInfo( { roCrateServiceDef, services, setIsDeployDialogOpen, is
                   <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     GPU
                   </h5>
-                  <span className="text-xs text-gray-400">🖥️</span>
+                  <span className="text-xs text-gray-400 dark:text-slate-400">🖥️</span>
                 </div>
                 <div className="text-sm text-gray-700 dark:text-slate-300 font-medium">
                   {(Number(roCrateServiceDef.gpuRequirements) > 0 ? roCrateServiceDef.gpuRequirements : 'Not required')}
@@ -230,7 +230,7 @@ function HubDialogInfo( { roCrateServiceDef, services, setIsDeployDialogOpen, is
                   <h5 className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                     RAM
                   </h5>
-                  <span className="text-xs text-gray-400">💾</span>
+                  <span className="text-xs text-gray-400 dark:text-slate-400">💾</span>
                 </div>
                 <div className="text-sm text-gray-700 dark:text-slate-300 font-medium mb-2">
                   {roCrateServiceDef.memoryRequirements && roCrateServiceDef.memoryUnits 
@@ -255,7 +255,7 @@ function HubDialogInfo( { roCrateServiceDef, services, setIsDeployDialogOpen, is
 
           <div className="flex mt-6">
             <Button
-              className="hover:opacity-90 text-white rounded w-full h-8"
+              className="hover:opacity-90 text-slate-950 dark:bg-emerald-500 dark:text-slate-950 rounded w-full h-8"
               variant={"mainGreen"}
               onClick={() => {setIsDeployDialogOpen(true); setIsInfoOpen(false);}}
             >
