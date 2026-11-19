@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { setAxiosInterceptor } from "@/lib/axiosClient";
 import { ClusterInfo } from "@/models/clusterInfo";
-import { SystemConfig, ClusterConfig } from "@/models/systemConfig";
-import { MinioStorageProvider } from "@/pages/ui/services/models/service";
+import { ClusterConfig } from "@/models/systemConfig";
 import { AlertTriangle } from "lucide-react";
+import { isAxiosError } from "axios";
 import React, {
   useCallback,
   createContext,
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     window.location.hash = "/login";
   }, []);
 
-  useEffect(() => {
+  const removeAxiosInterceptor = useMemo(() => {
     return setAxiosInterceptor(authData, {
       onTokensRefreshed: (refreshedAuthData) => {
         localStorage.setItem("authData", JSON.stringify(refreshedAuthData));
@@ -121,21 +121,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, [authData, handleSessionExpired]);
 
+  useEffect(() => removeAxiosInterceptor, [removeAxiosInterceptor]);
+
   async function refreshSystemConfig() {
     if (!authData.authenticated) {
       setSystemConfig(null);
       return;
     }
 
-    const response = await getSystemConfigApi() as {
-      config: SystemConfig;
-      minio_provider: MinioStorageProvider;
-      allowed_image_repositories: string[];
-    } | null;
+    const response = await getSystemConfigApi();
+    if (!response) {
+      setSystemConfig(null);
+      return;
+    }
 
-    if (response && authData.token === undefined && response.config.oidc_groups.length === 1 && response.config.oidc_groups[0] === "") {
+    if (authData.token === undefined && response.config.oidc_groups.length === 1 && response.config.oidc_groups[0] === "") {
       response.config.oidc_groups[0] = " ";
-    } else if (response && response.config.oidc_groups.length > 1) {
+    } else if (response.config.oidc_groups.length > 1) {
       response.config.oidc_groups = response.config.oidc_groups.map((group) => group === "" ? " " : group);
     }
 
@@ -165,15 +167,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password: authData.password,
         token: authData?.token,
       }));
-      await refreshSystemConfig();
     } catch (error) {
-      setAuthData({
-        user: "",
-        password: "",
-        endpoint: "",
-        authenticated: false,
-        egiSession: undefined,
-      });
+      if (!authData.token && isAxiosError(error) && error.response?.status === 401) {
+        setAuthData({
+          user: "",
+          password: "",
+          endpoint: "",
+          authenticated: false,
+          egiSession: undefined,
+        });
+      } else {
+        console.error("Unable to verify the saved session", error);
+      }
     }
   }
 

@@ -134,10 +134,12 @@ export const MinioProvider = ({ children }: { children: React.ReactNode }) => {
       return null;
 
     const minioPort = providerInfo.endpoint.split(":")[2] ?? env.minio_local_port;
-    providerInfo.endpoint =  isLocalhostDeployed(providerInfo.endpoint) ? "http://localhost:"+minioPort : providerInfo.endpoint;
+    const endpoint = isLocalhostDeployed(providerInfo.endpoint)
+      ? `http://localhost:${minioPort}`
+      : providerInfo.endpoint;
     return new S3Client({
       region: providerInfo.region,
-      endpoint: providerInfo.endpoint,
+      endpoint,
       credentials: {
         accessKeyId: providerInfo.access_key,
         secretAccessKey: providerInfo.secret_key,
@@ -517,7 +519,7 @@ export const MinioProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     async function getProviderInfo() {
       const config = await getSystemConfigApi();
-      if (!config) return;
+      if (!config?.minio_provider) return;
 
       setProviderInfo(config.minio_provider);
     }

@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import zoomPlugin from 'chartjs-plugin-zoom';
 import OscarColors from "@/styles";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/contexts/ThemeContext";
 
 ChartJS.register(
   CategoryScale,

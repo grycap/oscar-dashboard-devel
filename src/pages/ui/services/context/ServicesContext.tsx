@@ -203,7 +203,7 @@ export const ServicesProvider = ({
 
   async function getDefaultService() {
     const config = await getSystemConfigApi();
-    if (!config) return defaultService;
+    if (!config?.minio_provider) return defaultService;
 
     return {
       ...defaultService,

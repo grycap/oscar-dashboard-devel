@@ -8,15 +8,19 @@ type InterceptorCallbacks = {
   onSessionExpired: () => void;
 };
 
-const EXPIRY_SKEW_MS = 30_000;
 const MAX_TIMEOUT_MS = 2_147_000_000;
+let installedRequestId: number | undefined;
+let installedResponseId: number | undefined;
+let removeInstalledInterceptors: (() => void) | undefined;
 
 function getTokenExpiry(token: string) {
   try {
     const payload = token.split(".")[1];
     const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
-    const parsed = JSON.parse(atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=")));
-    return typeof parsed.exp === "number" ? parsed.exp * 1000 : null;
+    const { exp } = JSON.parse(
+      atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=")),
+    ) as { exp?: number };
+    return typeof exp === "number" ? exp * 1000 : null;
   } catch {
     return null;
   }
@@ -26,6 +30,8 @@ export function setAxiosInterceptor(
   initialAuthData: AuthData,
   callbacks: InterceptorCallbacks,
 ) {
+  removeInstalledInterceptors?.();
+
   let authData = initialAuthData.authenticated ? initialAuthData : null;
   let refreshPromise: Promise<AuthData> | undefined;
   let expired = false;
@@ -81,7 +87,16 @@ export function setAxiosInterceptor(
         return refreshed;
       })
       .catch((error: unknown) => {
-        expireSession();
+        if (
+          axios.isAxiosError(error) &&
+          (error.response === undefined ||
+            error.response.status < 400 ||
+            error.response.status >= 500)
+        ) {
+          console.error("Failed to renew the access token", error);
+        } else {
+          expireSession();
+        }
         throw error;
       })
       .finally(() => {
@@ -108,7 +123,7 @@ export function setAxiosInterceptor(
     if (expiry !== null) {
       const delay = Math.max(
         0,
-        expiry - Date.now() - (authData.refresh_token ? EXPIRY_SKEW_MS : 0),
+        expiry - Date.now(),
       );
       if (delay <= MAX_TIMEOUT_MS) {
         expiryTimer = setTimeout(() => {
@@ -150,6 +165,11 @@ export function setAxiosInterceptor(
         return Promise.reject(error);
       }
 
+      const expiry = getTokenExpiry(authData.token);
+      if (expiry === null || expiry > Date.now()) {
+        return Promise.reject(error);
+      }
+
       config._retry = true;
       if (!authData.refresh_token) {
         expireSession();
@@ -166,10 +186,21 @@ export function setAxiosInterceptor(
       return axios.request(config);
     },
   );
+  installedRequestId = requestId;
+  installedResponseId = responseId;
 
-  return () => {
+  const removeInterceptors = () => {
+    if (installedRequestId !== requestId || installedResponseId !== responseId) {
+      return;
+    }
     axios.interceptors.request.eject(requestId);
     axios.interceptors.response.eject(responseId);
+    installedRequestId = undefined;
+    installedResponseId = undefined;
+    removeInstalledInterceptors = undefined;
     if (expiryTimer) clearTimeout(expiryTimer);
   };
+  removeInstalledInterceptors = removeInterceptors;
+
+  return removeInterceptors;
 }
