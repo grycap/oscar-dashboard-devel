@@ -1,10 +1,21 @@
 import getSystemConfigApi from "@/api/config/getSystemConfig";
 import { getInfoApi } from "@/api/info/getInfoApi";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { setAxiosInterceptor } from "@/lib/axiosClient";
 import { ClusterInfo } from "@/models/clusterInfo";
 import { SystemConfig, ClusterConfig } from "@/models/systemConfig";
 import { MinioStorageProvider } from "@/pages/ui/services/models/service";
+import { AlertTriangle } from "lucide-react";
 import React, {
+  useCallback,
   createContext,
   useContext,
   useEffect,
@@ -66,16 +77,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } as AuthData;
     }
 
-    const parsedData = JSON.parse(storedData) as AuthData;
-
-    setAxiosInterceptor(parsedData);
-
-    return parsedData;
+    return JSON.parse(storedData) as AuthData;
   }, []);
 
   const [authData, setAuthDataState] = useState(initialData);
   const [systemConfig, setSystemConfig] = useState<ClusterConfig | null>(null);
   const [clusterInfo, setClusterInfo] = useState<ClusterInfo | null>(null);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
+
+  const handleSessionExpired = useCallback(() => {
+    const emptyAuthData: AuthData = {
+      user: "",
+      password: "",
+      endpoint: "",
+      token: undefined,
+      refresh_token: undefined,
+      authenticated: false,
+      egiSession: undefined,
+    };
+
+    localStorage.clear();
+    sessionStorage.clear();
+    if ("caches" in window) {
+      void caches.keys()
+        .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+        .catch((error) => console.error("Failed to clear browser cache", error));
+    }
+
+    setAuthDataState(emptyAuthData);
+    setSystemConfig(null);
+    setClusterInfo(null);
+    setIsSessionExpired(true);
+    window.location.hash = "/login";
+  }, []);
+
+  useEffect(() => {
+    return setAxiosInterceptor(authData, {
+      onTokensRefreshed: (refreshedAuthData) => {
+        localStorage.setItem("authData", JSON.stringify(refreshedAuthData));
+        setAuthDataState(refreshedAuthData);
+      },
+      onSessionExpired: handleSessionExpired,
+    });
+  }, [authData, handleSessionExpired]);
 
   async function refreshSystemConfig() {
     if (!authData.authenticated) {
@@ -108,8 +152,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       localStorage.removeItem("authData");
     }
-
-    setAxiosInterceptor(data);
 
     setAuthDataState(data);
   }
@@ -150,6 +192,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
+      <Dialog
+        open={isSessionExpired}
+        onOpenChange={(open) => {
+          if (open) setIsSessionExpired(true);
+        }}
+      >
+        <DialogContent
+          className="sm:max-w-[425px]"
+          onEscapeKeyDown={(event) => event.preventDefault()}
+          onInteractOutside={(event) => event.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              Sesión caducada
+            </DialogTitle>
+            <DialogDescription>
+              Tu sesión ha caducado. Debes iniciar sesión de nuevo para
+              continuar.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setIsSessionExpired(false);
+                window.location.hash = "/login";
+              }}
+            >
+              Ir al inicio de sesión
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AuthContext.Provider>
   );
 };

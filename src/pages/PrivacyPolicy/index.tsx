@@ -20,7 +20,7 @@ export function PrivacyPolicy() {
     {
       category: "Personal data processed",
       details:
-        "The OSCAR Dashboard processes the minimum data needed to authenticate you and operate the cluster on your behalf.\n- If you log in with OSCAR credentials we store your username, password and chosen endpoint in your browser's local storage for the duration of the session.\n- If you log in through EGI Check-in or Keycloak we receive the standard OpenID Connect user profile (full name, preferred username, email, verification status, unique identifier, entitlements and assurance level) together with the issued access token. This information is kept only in your browser to personalise the UI and authorise requests against an OSCAR cluster.",
+        "The OSCAR Dashboard processes the minimum data needed to authenticate you and operate the cluster on your behalf.\n- If you log in with OSCAR credentials we store your username, password and chosen endpoint in your browser's local storage for the duration of the session.\n- If you log in through EGI Check-in or Keycloak we receive the standard OpenID Connect user profile (full name, preferred username, email, verification status, unique identifier, entitlements and assurance level) together with the issued access token and, when provided by the identity provider, a refresh token. This information is kept only in your browser to personalise the UI, renew the session and authorise requests against an OSCAR cluster.",
     },
     {
       category: "Purpose of the processing of personal data",
@@ -40,7 +40,7 @@ export function PrivacyPolicy() {
     {
       category: "Data retention",
       details:
-        "Authentication data is stored locally in your browser (local storage items such as 'authData' and the issued access token). It is cleared when you log out or manually clear your browser storage. The only cookie we set (`sidebar:state`) keeps the sidebar preference for up to 7 days. No server-side copies are kept by the dashboard.",
+        "Authentication data is stored locally in your browser (local storage items such as 'authData', the issued access token and an optional refresh token). It is cleared when you log out, when a non-renewable session expires, or when you manually clear your browser storage. The only cookie we set (`sidebar:state`) keeps the sidebar preference for up to 7 days. No server-side copies are kept by the dashboard.",
     },    
     {
       category: "Cookies",
