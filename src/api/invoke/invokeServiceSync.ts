@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
+import type { AxiosInstance } from "axios";
 
 interface InvokeServiceSyncProps {
   serviceName: string;
@@ -32,6 +33,9 @@ export default async function invokeServiceSync({
   token,
   endpoint,
 }: InvokeServiceSyncProps) {
+  if (!serviceName?.trim()) {
+    throw new Error("Service name is required.");
+  }
   const axiosInstance: AxiosInstance = axios.create();
 
   try {
@@ -48,8 +52,18 @@ export default async function invokeServiceSync({
 
     return response.data;
   } catch (error) {
-    console.error("Error invoking service:", error);
-
-    throw new Error("Error invoking service");
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const data = error.response?.data;
+      const detail = typeof data === "string" && data.trim() && !data.trim().startsWith("<")
+        ? data.trim().slice(0, 200)
+        : typeof data?.message === "string"
+          ? data.message.slice(0, 200)
+          : typeof data?.error === "string"
+            ? data.error.slice(0, 200)
+            : error.response?.statusText || error.message;
+      throw new Error(status ? `HTTP ${status}: ${detail}` : detail);
+    }
+    throw error;
   }
 }

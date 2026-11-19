@@ -45,9 +45,12 @@ import { getMimeTypeFromPath } from "@/lib/mimeType";
 import { errorMessage } from "@/lib/error";
 import { getEditableLanguage } from "@/lib/mimeType";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { buildAI4EOSCInput } from "@/lib/ai4eoscInvoke";
 
 type View = "upload" | "editor" | "response";
 type RequestFileType = "text" | "image" | "binary";
+type InvokeTemplate = "raw" | "ai4eosc";
 type ResponseType = "text" | "image" | "file" | "zip";
 type ZipPreviewType = "text" | "image" | "pdf" | "other";
 
@@ -71,6 +74,9 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [fileContent, setFileContent] = useState<string>("");
   const [fileType, setFileType] = useState<RequestFileType | null>(null);
+  const [invokeTemplate, setInvokeTemplate] = useState<InvokeTemplate>("raw");
+  const [modelFileKey, setModelFileKey] = useState("files");
+  const [modelParameters, setModelParameters] = useState("{}");
   const [currentView, setCurrentView] = useState<View>("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("plaintext");
@@ -166,18 +172,24 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
   };
 
   const invokeService = async () => {
-    if (!file && fileType !== "text" && fileContent === "") {
+    if (!currentService?.name) {
+      alert.error("Select a service before invoking it.");
+      return;
+    }
+    if (invokeTemplate === "raw" && !file && fileType !== "text" && fileContent === "") {
       return;
     }
 
-    const modifiedFile = fileType === "text" || !file
-      ? new File([fileContent], file?.name ?? "file.txt", {
-        type: file?.type ?? "text/plain",
-      })
-      : file!;
-
-    if (modifiedFile.size === 0) {return;}
     try {
+      const modifiedFile = invokeTemplate === "ai4eosc"
+        ? await buildAI4EOSCInput(file, modelFileKey, modelParameters)
+        : fileType === "text" || !file
+          ? new File([fileContent], file?.name ?? "file.txt", {
+            type: file?.type ?? "text/plain",
+          })
+          : file!;
+
+      if (modifiedFile.size === 0) {return;}
       const token = authData.token ?? currentService?.token;
       const responseLocal = await invokeServiceSync({
         file: modifiedFile,
@@ -259,7 +271,39 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
   };
 
   const renderUploadView = () => (
-    <div className="grid grid-cols-1 w-full overflow-y-auto">
+    <div className="grid grid-cols-1 gap-3 w-full overflow-y-auto content-start">
+      <div>
+        <label htmlFor="invoke-template" className="text-sm font-medium">Input template</label>
+        <Select value={invokeTemplate} onValueChange={(value: InvokeTemplate) => {
+          setInvokeTemplate(value);
+          removeFile();
+        }}>
+          <SelectTrigger id="invoke-template" aria-label="Input template">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="raw">Raw file (OSCAR default)</SelectItem>
+            <SelectItem value="ai4eosc">AI4EOSC / DEEPaaS</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {invokeTemplate === "ai4eosc" && (
+        <div className="grid gap-2">
+          <p className="text-sm text-muted-foreground">
+            Select a model input file or provide parameters only (for example, {`{"help":""}`}).
+            The file will be embedded in the AI4EOSC JSON payload.
+          </p>
+          <Input label="Model file parameter" value={modelFileKey}
+            onChange={(event) => setModelFileKey(event.target.value)} placeholder="files" />
+          <label htmlFor="ai4eosc-parameters" className="text-sm font-medium">
+            Additional model parameters (JSON object)
+          </label>
+          <textarea id="ai4eosc-parameters" value={modelParameters}
+            onChange={(event) => setModelParameters(event.target.value)} spellCheck={false}
+            className="min-h-24 w-full rounded-md border border-input bg-background text-foreground p-2 font-mono text-sm"
+          />
+        </div>
+      )}
       {!file ? (
         <>
           <input
@@ -280,7 +324,7 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
               Drag and drop your file here or click to open the file explorer
               <Button>Upload file</Button>
             </div>
-            <div className="flex justify-center items-center">
+            {invokeTemplate === "raw" && <div className="flex justify-center items-center">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -293,7 +337,7 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
                 Or use the code editor
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
-            </div>
+            </div>}
           </div>
         </>
       ) : (
@@ -310,7 +354,7 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
                 ({formatFileSize(file.size)})
               </span>
             </div>
-            {fileType === "text" && (
+            {fileType === "text" && invokeTemplate === "raw" && (
               <Button
                 variant="outline"
                 onClick={() => setCurrentView("editor")}
@@ -764,6 +808,9 @@ export function InvokePopover({ service, triggerRenderer }: Props) {
     setFile(null);
     setFileContent("");
     setFileType(null);
+    setInvokeTemplate("raw");
+    setModelFileKey("files");
+    setModelParameters("{}");
     setCurrentView("upload");
     setSelectedLanguage("plaintext");
     setResponse("");

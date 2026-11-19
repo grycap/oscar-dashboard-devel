@@ -7,6 +7,7 @@ import { InvokePopover } from "../../InvokePopover";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { isVersionLower } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import useServicesContext from "../../../context/ServicesContext";
 
 interface Props {
   mode: ServiceViewMode;
@@ -14,10 +15,12 @@ interface Props {
 
 function CreateUpdateServiceTabs({ mode }: Props) {
   const { clusterInfo } = useAuth();
+  const { formService } = useServicesContext();
   const tab = useLastUriParam();
   const { serviceId } = useParams();
   const isInCreateMode = mode === ServiceViewMode.Create;
   const isInUpdateMode = mode === ServiceViewMode.Update;
+  const isSelectedServiceReady = Boolean(serviceId && formService.name === serviceId);
 
   function getVariant(label: string) {
     return tab === label ? "lightGreen" : "ghost";
@@ -73,9 +76,9 @@ function CreateUpdateServiceTabs({ mode }: Props) {
             gap: "10px",
           }}
         >
-          {isInUpdateMode && (
+          {isInUpdateMode && isSelectedServiceReady && (
             <motion.div layout>
-              <InvokePopover />
+              <InvokePopover service={formService} />
             </motion.div>
           )}
           <AnimatePresence mode="popLayout">
