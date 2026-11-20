@@ -3,6 +3,7 @@ import { useMinio } from "@/contexts/Minio/MinioContext";
 import InfoItem from "./components/InfoItem";
 import InfoBooleanItem from "./components/InfoBooleanItem";
 import InfoListItems from "./components/InfoListItems";
+import { formatTokenLifetime, getRefreshTokenLifetime } from "./tokenExpiry";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -18,7 +19,8 @@ function InfoView() {
     document.title ="OSCAR - Info"
   });
   const { authData, systemConfig, clusterInfo } = useAuth();
-  const { endpoint, user, password, egiSession, token, refresh_token } = authData;
+  const { endpoint, user, password, egiSession, token, refresh_token, refresh_token_lifetime_seconds } = authData;
+  const refreshLifetime = refresh_token ? getRefreshTokenLifetime(refresh_token, refresh_token_lifetime_seconds) : undefined;
   const { providerInfo } = useMinio();
   const { open } = useSidebar();
   // 1976 is the width when flex wrap is applied with the sidebar open
@@ -59,7 +61,13 @@ function InfoView() {
                   <InfoItem label="Subject ID" value={egiSession?.sub ?? ""} enableCopy />
                   <InfoItem label="Access Token" value={token} isPassword enableCopy />
                   {refresh_token ? (
-                    <InfoItem label="Refresh Token" value={refresh_token} isPassword enableCopy />
+                    <InfoItem
+                      label="Refresh Token"
+                      value={refresh_token}
+                      isPassword
+                      enableCopy
+                      detail={`Lifetime: ${refreshLifetime === undefined ? "unavailable" : formatTokenLifetime(refreshLifetime)}`}
+                    />
                   ) : egiSession?.sub?.endsWith("@egi.eu") ? (
                     <InfoItem
                       label="Refresh Token"

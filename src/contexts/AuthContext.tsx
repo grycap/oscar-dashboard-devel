@@ -35,7 +35,8 @@ export type AuthData = {
   password: string;
   endpoint: string;
   token?: string;
-  refresh_token?: string; 
+  refresh_token?: string;
+  refresh_token_lifetime_seconds?: number;
   authenticated?: boolean;
   egiSession?: EGISessionInfo;
 };
