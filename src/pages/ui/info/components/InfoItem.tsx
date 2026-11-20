@@ -11,6 +11,7 @@ interface Props {
   displayLabel?: boolean;
   link?: {url?: string, enableRedirectIcon: boolean;};
   padding?: string;
+  detail?: string;
 }
 
 function InfoItem({
@@ -21,6 +22,7 @@ function InfoItem({
   displayLabel = true,
   link = {enableRedirectIcon: false},
   padding = "16px",
+  detail,
 }: Props) {
   const [isRevealed, setIsRevealed] = useState(false);
 
@@ -61,6 +63,7 @@ function InfoItem({
             <Link style={{ textDecoration: 'none' }} to={link.url} target="_blank">{displayedValue}</Link>
           }
         </div>
+        {detail && <span className="shrink-0 whitespace-nowrap text-xs text-muted-foreground">{detail}</span>}
 
         {isPassword && (
           <Eye
